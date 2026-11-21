@@ -1,0 +1,144 @@
+================================================================================
+NESFIC 2026 PROOF OF WORK & TECHNICAL SOLUTION EVIDENCE
+Problem Statement: NESFIC-D-39 (Digital Inventory & Movement Tracking for Government Press and Stationery)
+Directorate: Directorate of Printing & Stationery, Information, Public Relations, Printing & Stationery Department, Government of Assam (Bamunimaidam, Guwahati - 781021)
+Lead Applicant: Ron Hatibaruah (ron.hatibaruah@gmail.com)
+Live Production URL: https://mudran-sewa.pages.dev
+Public GitHub Repository: https://github.com/RonHatibaruah/assam-gov-stationery-track
+================================================================================
+
+1. EXECUTIVE SUMMARY & PROOF OF FUNCTIONAL MVP
+--------------------------------------------------------------------------------
+This Proof of Work document demonstrates that the proposed solution for NESFIC-D-39 ("Mudran-Sewa") is NOT a theoretical proposal or conceptual slide deck. It is a fully engineered, tested, containerized, and globally deployed production platform engineered specifically for the Directorate of Printing & Stationery, Government of Assam.
+
+The platform provides end-to-end digital provenance, raw paper reel and ream inventory management, inter-departmental e-requisitions across all 35 Assam districts, printing press machine telemetry (with paper trimming loss percentage monitoring), serialized publication stamping for The Assam Gazette (অসম ৰাজপত্ৰ), and tamper-evident QR E-Gatepasses with live GPS highway transit tracking.
+
+2. VERIFIED EVIDENCE & LIVE URLS
+--------------------------------------------------------------------------------
+• Live Web Portal (Production): https://mudran-sewa.pages.dev
+• Interactive In-App Tutorial: https://mudran-sewa.pages.dev/#tutorial
+• Serverless Edge Health API: https://mudran-sewa.pages.dev/api/health
+• Edge Analytics API: https://mudran-sewa.pages.dev/api/analytics
+• Open-Source Codebase: https://github.com/RonHatibaruah/assam-gov-stationery-track
+• Automated Test Suite: 10/10 Tests Passing in 43ms (Node.js test runner)
+
+3. SYSTEM ARCHITECTURE & DATA FLOW
+--------------------------------------------------------------------------------
+[Paper Mills (Nagaon / Ballarpur / ITC)]
+       │ (Reels/Reams + Mill Invoices + Quality Certificates)
+       ▼
+[Central Store Sheds A, B, C (Bamunimaidam)] ──► Goods Received Notes (GRN)
+       │                                     ──► Safety Buffer Watch (<800 Reams Alert)
+       ▼
+[Press Production Floor]
+       ├── Harris Web Offset Press #1 (Reel-fed) ──► The Assam Gazette (অসম ৰাজপত্ৰ)
+       ├── Heidelberg Speedmaster 4-Color Press  ──► Legislative Budget & Assembly Bills
+       └── Section Binding & Stitching Line #3   ──► Land Revenue Jamabandi Registers
+       │ (Real-Time Trimming Loss Telemetry: Benchmark <2.5% vs Alert >3.0%)
+       ▼
+[Finished Goods Storage & Quota Allocation]
+       ▲
+       │ e-Indents Submitted (35 District Commissionerates / Secretariat)
+[Digital Requisition Engine] ──► Sanction Orders (DPS/SANCT/2026/...)
+       │
+       ▼
+[Tamper-Proof QR E-Gatepass Dispatch]
+       │ (Vehicle AS-03-BC-7819 / AS-01-GC-4182 + Driver + Manifest + SHA-256 Hash)
+       ▼
+[Assam National Highway Fleet Transit Tracker]
+       │ (Guwahati -> Nagaon -> Kaziranga -> Jorhat / Dibrugarh / Silchar)
+       ▼
+[District Treasury & Stationery Store (Destination)]
+       │ (QR Scan + Handshake OTP #882190 Verification)
+       ▼
+[Closed Lifecycle Ledger & CAG Form GFR-19 Export]
+
+4. AUTOMATED TEST SUITE EXECUTION LOGS
+--------------------------------------------------------------------------------
+Command: npm test
+Environment: Node.js v20.19.5, Darwin x64
+
+> nesfic-d39-govt-stationery-track@1.0.0 test
+> npm test -w @nesfic/api
+
+✔ Database seeds correctly with authentic Assam government press inventory (0.638ms)
+✔ Inward stock receipt (GRN) adds new paper stock and logs audit (0.143ms)
+✔ Stock adjustments correctly update balance and enforce non-negative floor (0.103ms)
+✔ Requisition (e-Indent) submission and sanction lifecycle (0.175ms)
+✔ Press floor job ticket progression and trimming loss tracking (0.168ms)
+✔ Dispatch E-Gatepass creation, QR verification token lookup, and delivery acknowledgment (0.262ms)
+✔ Buffer stock alert trigger and executive analytics (0.204ms)
+✔ API state and analytics calculation check (0.708ms)
+✔ Public QR Gatepass verification endpoint logic (0.090ms)
+✔ Gazette registry holds official publications with SHA-256 integrity (0.071ms)
+
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 43.03ms
+
+5. LIVE REST API ENDPOINTS & SAMPLE PAYLOADS
+--------------------------------------------------------------------------------
+1. Service Health (GET /api/health)
+Response:
+{
+  "status": "ok",
+  "challengeCode": "NESFIC-D-39",
+  "title": "Digital Inventory & Movement Tracking for Government Press and Stationery",
+  "department": "Directorate of Printing & Stationery, Government of Assam (Bamunimaidam, Guwahati)",
+  "edge": true,
+  "timestamp": "2026-11-21T20:26:25.379Z"
+}
+
+2. Real-Time Analytics (GET /api/analytics)
+Response:
+{
+  "portalCode": "NESFIC-D-39",
+  "directorate": {
+    "name": "Directorate of Printing & Stationery",
+    "location": "Bamunimaidam, Guwahati, Kamrup Metropolitan, Assam - 781021",
+    "coordinates": { "lat": 26.1834, "lng": 91.7766 }
+  },
+  "totalStockReams": 5388,
+  "totalStockValueINR": 4279100,
+  "itemsBelowBufferCount": 0,
+  "totalCatalogItems": 5,
+  "pendingRequisitions": 0,
+  "sanctionedRequisitions": 1,
+  "activeJobs": 2,
+  "averageWastagePercentage": 1.85,
+  "inTransitFleet": 1,
+  "deliveredConsignmentsCount": 1,
+  "totalDistrictsSupported": 35
+}
+
+3. Public E-Gatepass Verification (GET /api/verify/gatepass/DPS-GP-KAM-98012-VERIFIED-AUTH)
+Response:
+{
+  "valid": true,
+  "gatepass": {
+    "gatepassNumber": "DPS/GP/2026/KAM/088",
+    "destinationDistrict": "Kamrup Metropolitan",
+    "receivingFacility": "District Treasury & Stationery Store, Panbazar, Guwahati",
+    "vehicleNumber": "AS-01-GC-4182 (Govt Dedicated E-Truck)",
+    "consignmentDetails": "150 Reams Sunlit Bond 80 GSM + 500 Treasury Challan Books",
+    "status": "DELIVERED_ACKNOWLEDGED"
+  },
+  "issuer": "Directorate of Printing & Stationery, Assam (Bamunimaidam, Guwahati)"
+}
+
+6. VERIFICATION INSTRUCTIONS FOR EVALUATION COMMITTEE
+--------------------------------------------------------------------------------
+The evaluation committee can independently verify the working prototype immediately:
+1. Open https://mudran-sewa.pages.dev in any modern web browser or mobile phone.
+2. Click on "Tutorial & Guide" in the top header to view the end-to-end operational walkthrough.
+3. In the "Paper & Consumables Store" tab, click "Record Inward Delivery (GRN)" to log a new paper lot.
+4. In the "e-Indents & Sanctions" tab, click "New e-Indent" to simulate a DC office requisition, and then click "Approve & Sanction" to verify the automated sanction order workflow.
+5. In the "Press Floor & Gazette" tab, advance a printing job ticket and observe the live paper trimming wastage calculation.
+6. In the "Dispatch & GPS Fleet Tracker" tab, inspect active highway consignments, click "Inspect Pass" to view the cryptographic QR E-Gatepass, and confirm delivery via OTP.
+7. In the "Admin Command & Audit" tab, review the immutable SHA-256 state log and click "Export CAG GFR-19 Report" to download the official stock verification register.
+================================================================================
