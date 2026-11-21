@@ -1,22 +1,31 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import http from "node:http";
+import { db } from "../src/db.js";
 
-test("HTTP API endpoints respond accurately", async () => {
-  // Dynamically import server or launch a test instance
-  const { db } = await import("../src/db.js");
-
-  // Verify DB state
-  const batches = db.getAllBatches();
-  assert.ok(batches.length >= 2);
-
-  // Test verify logic
-  const verified = db.getBatchByQr("QR-ASM26-8894-X82F");
-  assert.equal(verified.id, "ASM-2026-CTC-001");
-  assert.equal(verified.giCertNumber, "GI-IN-ASM-TEA-00441");
-
-  // Test analytics
+test("API state and analytics calculation check", () => {
   const analytics = db.getAnalytics();
-  assert.equal(analytics.mrlComplianceRatePct, 75); // 3 of 4 tested batches compliant (1 flagged violation)
-  assert.ok(analytics.latestMerkleRoot.startsWith("0x"));
+  assert.equal(analytics.portalCode, "NESFIC-D-39");
+  assert.equal(analytics.directorate.name, "Directorate of Printing & Stationery");
+  assert.equal(analytics.directorate.location, "Bamunimaidam, Guwahati, Kamrup Metropolitan, Assam - 781021");
+  assert.ok(analytics.totalStockReams > 0);
+  assert.ok(analytics.totalStockValueINR > 0);
+  assert.equal(analytics.totalDistrictsSupported, 35);
+});
+
+test("Public QR Gatepass verification endpoint logic", () => {
+  const verified = db.verifyGatepassQR("DPS-GP-KAM-98012-VERIFIED-AUTH");
+  assert.equal(verified.valid, true);
+  assert.equal(verified.gatepass.id, "GP-2026-DIS-088");
+  assert.equal(verified.gatepass.destinationDistrict, "Kamrup Metropolitan");
+
+  const invalid = db.verifyGatepassQR("INVALID-TAMPERED-TOKEN");
+  assert.equal(invalid.valid, false);
+});
+
+test("Gazette registry holds official publications with SHA-256 integrity", () => {
+  const gazettes = db.getAllGazettes();
+  assert.ok(gazettes.length >= 2);
+  const extraordinary = gazettes.find(g => g.gazetteType === "EXTRAORDINARY");
+  assert.ok(extraordinary);
+  assert.equal(extraordinary.digitalChecksumSHA256.length, 64);
 });

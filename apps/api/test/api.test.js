@@ -1,119 +1,149 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { db } from "../src/db.js";
-import { MerkleTree, sha256 } from "../../../packages/shared/src/merkle.js";
 
-test("Database seeds correctly with authentic Assam tea batches", () => {
-  const batches = db.getAllBatches();
-  assert.ok(batches.length >= 2, "Expected at least 2 pre-seeded batches");
-  const batch1 = db.getBatchById("ASM-2026-CTC-001");
-  assert.ok(batch1, "Batch ASM-2026-CTC-001 should exist");
-  assert.equal(batch1.stage, "RETAIL_PACKAGED");
-  assert.equal(batch1.plucking.district, "Jorhat");
-  assert.equal(batch1.giTagAuthorized, true);
-  assert.equal(batch1.labTest.pesticideMRLStatus, "COMPLIANT");
+test("Database seeds correctly with authentic Assam government press inventory", () => {
+  const inventory = db.getAllInventory();
+  assert.ok(inventory.length >= 5, "Expected at least 5 pre-seeded inventory items");
+  
+  const maplitho = db.getInventoryItem("PAP-MAP-70-001");
+  assert.ok(maplitho, "PAP-MAP-70-001 Maplitho paper should exist");
+  assert.equal(maplitho.gsm, 70);
+  assert.equal(maplitho.unit, "Reams");
+  assert.equal(maplitho.qcPassed, true);
+
+  const bond = db.getInventoryItem("PAP-BND-80-002");
+  assert.ok(bond, "PAP-BND-80-002 Sunlit Bond paper should exist");
+  assert.equal(bond.paperType, "SUNLIT_BOND");
 });
 
-test("Consumer QR lookup resolves correctly", () => {
-  const verified = db.getBatchByQr("QR-ASM26-8894-X82F");
-  assert.ok(verified, "Should find batch by QR token");
-  assert.equal(verified.id, "ASM-2026-CTC-001");
-  assert.equal(verified.processing.grade, "BOP (Broken Orange Pekoe)");
-});
-
-test("STG Plucking creates new batch and transitions stages", () => {
-  const newBatch = db.createPlucking({
-    growerId: "STG-JHT-001",
-    growerName: "Mukund Saikia",
-    gardenName: "Borbhetta Smallholding Cluster #4",
-    district: "Jorhat",
-    gps: { lat: 26.7512, lng: 94.2155 },
-    estimatedWeightKg: 350.0,
-    procType: "CTC",
+test("Inward stock receipt (GRN) adds new paper stock and logs audit", () => {
+  const initialCount = db.getAllInventory().length;
+  const newItem = db.inwardStock({
+    name: "Heavy Duty Kraft Paper 120 GSM",
+    category: "RAW_PAPER_REAM",
+    paperType: "KRAFT_PAPER",
+    gsm: 120,
+    sheetSizeInches: "24x36",
+    currentStockReams: 500,
+    bufferThresholdReams: 100,
+    unit: "Reams",
+    millSupplier: "Assam Pulp & Paper Depot",
+    millLotNo: "LOT-KFT-2026-001",
+    unitCostINR: 520.0,
   });
 
-  assert.ok(newBatch.id.startsWith("ASM-2026-CTC-"));
-  assert.equal(newBatch.stage, "PLUCKED");
+  assert.ok(newItem.id);
+  assert.equal(newItem.name, "Heavy Duty Kraft Paper 120 GSM");
+  assert.equal(db.getAllInventory().length, initialCount + 1);
 
-  // Step 2: Weighbridge
-  const weighed = db.updateWeighbridge(newBatch.id, {
-    verifiedWeightKg: 348.2,
-    weighbridgeId: "WB-JHT-01",
+  // Check audit log
+  const latestAudit = db.auditLogs[0];
+  assert.equal(latestAudit.action, "INWARD_GOODS_RECEIVED");
+  assert.ok(latestAudit.tamperProofHash.length === 64, "Must have valid SHA-256 hash");
+});
+
+test("Stock adjustments correctly update balance and enforce non-negative floor", () => {
+  const item = db.getInventoryItem("PAP-MAP-70-001");
+  const beforeStock = item.currentStockReams;
+
+  db.adjustStock("PAP-MAP-70-001", -50, "Sample run deduction");
+  assert.equal(item.currentStockReams, beforeStock - 50);
+
+  // Re-adjust
+  db.adjustStock("PAP-MAP-70-001", 50, "Restoration");
+  assert.equal(item.currentStockReams, beforeStock);
+});
+
+test("Requisition (e-Indent) submission and sanction lifecycle", () => {
+  const newReq = db.createRequisition({
+    departmentCode: "DC_DIB",
+    departmentName: "Office of the District Commissioner, Dibrugarh",
+    district: "Dibrugarh",
+    indenterOfficerName: "Anupam Sarma, ACS",
+    indenterDesignation: "ADC (General)",
+    priority: "URGENT_ASSEMBLY",
+    purpose: "Assembly election preparation stationery",
+    items: [
+      { itemId: "PAP-MAP-70-001", itemName: "Maplitho 70 GSM", category: "RAW_PAPER_REAM", requestedQty: 100, unit: "Reams" }
+    ],
   });
-  assert.equal(weighed.stage, "COLLECTION_WEIGHED");
-  assert.equal(weighed.plucking.verifiedWeightKg, 348.2);
 
-  // Step 3: Factory Processing
-  const processed = db.updateProcessing(newBatch.id, {
-    factoryId: "FAC-JHT-01",
-    factoryName: "Tocklai Valley Bought Leaf Factory",
-    grade: "BP (Broken Pekoe)",
-    madeTeaWeightKg: 78.3,
+  assert.ok(newReq.id.startsWith("IND-2026-DIB-"));
+  assert.equal(newReq.status, "SUBMITTED");
+
+  // Sanction requisition
+  const sanctioned = db.approveRequisition(newReq.id, {
+    approverName: "Superintendent of Printing & Stationery",
+    sanctionOrderNo: "DPS/SANCT/2026/DIB/991",
   });
-  assert.equal(processed.stage, "FACTORY_PROCESSED");
 
-  // Step 4: Lab Test
-  const tested = db.updateLabTest(newBatch.id, {
-    pesticideMRLStatus: "COMPLIANT",
-    moisturePercentage: 3.1,
+  assert.equal(sanctioned.status, "SANCTIONED");
+  assert.equal(sanctioned.sanctionOrderNo, "DPS/SANCT/2026/DIB/991");
+  assert.equal(sanctioned.items[0].sanctionedQty, 100);
+});
+
+test("Press floor job ticket progression and trimming loss tracking", () => {
+  const job = db.createJobTicket({
+    jobTitle: "Assam Gazette Special Edition",
+    productType: "THE_ASSAM_GAZETTE",
+    targetQuantity: 4000,
+    unit: "Copies",
+    paperLotUsedId: "PAP-MAP-70-001",
+    paperReamsAllocated: 20,
+    paperWastagePercentage: 1.5,
   });
-  assert.equal(tested.stage, "LAB_CERTIFIED");
-  assert.equal(tested.labTest.pesticideMRLStatus, "COMPLIANT");
+
+  assert.ok(job.id.startsWith("JOB-2026-PRS-"));
+  assert.equal(job.stage, "PRE_PRESS_PLATEMAKING");
+
+  // Advance stage to PRESS_PRINTING
+  const running = db.updateJobStage(job.id, "PRESS_PRINTING", 2.2);
+  assert.equal(running.stage, "PRESS_PRINTING");
+  assert.equal(running.paperWastagePercentage, 2.2);
+
+  // Complete job
+  const completed = db.updateJobStage(job.id, "COMPLETED_WAREHOUSE", 2.4);
+  assert.equal(completed.stage, "COMPLETED_WAREHOUSE");
+  assert.ok(completed.completedAt);
 });
 
-test("Merkle Tree root generation and anchor calculation", () => {
-  const leaves = ["apple", "banana", "camellia_sinensis_assamica"].map(s => sha256(s));
-  const tree = new MerkleTree(leaves);
-  const root = tree.getRoot();
-  assert.ok(root.startsWith("0x"), "Root must be hex string with 0x prefix");
+test("Dispatch E-Gatepass creation, QR verification token lookup, and delivery acknowledgment", () => {
+  const gatepass = db.createGatepass({
+    destinationDistrict: "Silchar",
+    receivingFacility: "District Treasury, Cachar (Silchar)",
+    vehicleNumber: "AS-11-BC-3392",
+    driverName: "Bishnu Prasad Das",
+    driverPhone: "+91-94351-88291",
+    consignmentDetails: "100 Reams Paper + 400 Challan Books",
+    totalBundles: 80,
+    grossWeightKg: 1200.0,
+  });
 
-  const anchor = db.createAnchor();
-  assert.ok(anchor.rootHash.startsWith("0x"));
-  assert.ok(anchor.simulatedTxHash.startsWith("0x"));
-  assert.ok(anchor.batchCount > 0);
+  assert.ok(gatepass.id.startsWith("GP-2026-DIS-"));
+  assert.equal(gatepass.status, "IN_TRANSIT_HIGHWAY");
+  assert.ok(gatepass.qrVerificationToken.includes("VERIFIED-AUTH"));
+
+  // Verify by QR token
+  const verifyResult = db.verifyGatepassQR(gatepass.qrVerificationToken);
+  assert.equal(verifyResult.valid, true);
+  assert.equal(verifyResult.gatepass.id, gatepass.id);
+
+  // Acknowledge delivery
+  const delivered = db.acknowledgeDelivery(gatepass.id, "Cachar District Treasury Officer", "882190");
+  assert.equal(delivered.status, "DELIVERED_ACKNOWLEDGED");
+  assert.ok(delivered.acknowledgmentTimestamp);
 });
 
-test("Analytics correctly computes regional breakdown", () => {
-  const stats = db.getAnalytics();
-  assert.ok(stats.totalBatches >= 6, "Expected at least 6 pre-seeded batches");
-  assert.ok(stats.totalGreenLeafKg > 0);
-  assert.ok(stats.totalMadeTeaKg > 0);
-  assert.ok(stats.districtBreakdown["Jorhat"] >= 1);
-});
+test("Buffer stock alert trigger and executive analytics", () => {
+  // Force an item below buffer
+  const item = db.getInventoryItem("PAP-MAP-70-001");
+  item.currentStockReams = item.bufferThresholdReams - 50;
+  db.checkBufferStockAlerts();
 
-test("Intercepts chemical safety violations and blocks packaging", () => {
-  const flagged = db.getBatchById("ASM-2026-FLG-006");
-  assert.ok(flagged, "Flagged batch ASM-2026-FLG-006 must exist");
-  assert.equal(flagged.labTest.pesticideMRLStatus, "NON_COMPLIANT");
-  assert.equal(flagged.giTagAuthorized, false);
-  assert.ok(flagged.revocationReason.includes("Quinalphos"));
-
-  // Verify packaging is blocked
-  assert.throws(() => {
-    db.updatePackaging("ASM-2026-FLG-006", { serializedQrCode: "FORGED_QR" });
-  }, /Chemical MRL non-compliance violation/);
-});
-
-test("Admin GI revocation and alert feed functions", () => {
-  const alerts = db.getAdminAlerts();
-  assert.ok(alerts.length >= 1, "Must have active alerts");
-  assert.equal(alerts[0].severity, "CRITICAL");
-
-  // Test toggling GI
-  const toggled = db.toggleGICertification("ASM-2026-CTC-001", false, "Random Audit Quarantine");
-  assert.equal(toggled.giTagAuthorized, false);
-  assert.equal(toggled.revocationReason, "Random Audit Quarantine");
-
-  // Re-authorize
-  const restored = db.toggleGICertification("ASM-2026-CTC-001", true);
-  assert.equal(restored.giTagAuthorized, true);
-  assert.equal(restored.revocationReason, undefined);
-});
-
-test("PPC Agrochemical Whitelist returns approved reference compounds", () => {
-  const whitelist = db.getAgrochemicalWhitelist();
-  assert.ok(whitelist.length >= 10);
-  const quinalphos = whitelist.find(c => c.chemical === "Quinalphos");
-  assert.equal(quinalphos.maxPpm, 0.01);
-  assert.equal(quinalphos.phiDays, 14);
+  const analytics = db.getAnalytics();
+  assert.equal(analytics.portalCode, "NESFIC-D-39");
+  assert.ok(analytics.itemsBelowBufferCount >= 1, "Should detect at least 1 item below buffer");
+  assert.ok(analytics.activeAlerts.length >= 1, "Should have active alert in feed");
+  assert.equal(analytics.totalDistrictsSupported, 35);
 });

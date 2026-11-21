@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="govGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#004d40"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+    <linearGradient id="goldShine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Ring (Government Emblem Seal) -->
+  <circle cx="32" cy="32" r="30" fill="url(#govGreen)" stroke="url(#goldShine)" stroke-width="2.5" />
+  <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(245, 158, 11, 0.4)" stroke-width="1" stroke-dasharray="2,2"/>
+
+  <!-- Stack of Paper Reams / Finished Stationery -->
+  <path d="M18 38 L32 44 L46 38 L32 32 Z" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1"/>
+  <path d="M18 34 L32 40 L46 34 L32 28 Z" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+  <path d="M18 30 L32 36 L46 30 L32 24 Z" fill="#ffffff" stroke="#94a3b8" stroke-width="1.2"/>
+
+  <!-- Offset Press Roller (Cylinder) in Gold -->
+  <rect x="22" y="16" width="20" height="6" rx="3" fill="url(#goldShine)"/>
+  <line x1="20" y1="19" x2="44" y2="19" stroke="#ffffff" stroke-width="1" stroke-linecap="round"/>
+
+  <!-- Golden Quill Pen writing on paper -->
+  <path d="M37 13 C42 15 45 19 44 23 L32 35 L30 36 L31 34 L40 22 C41 20 40 17 37 13 Z" fill="url(#goldShine)"/>
+  <polygon points="30,36 31,34 33,35" fill="#fef3c7"/>
+
+  <!-- Small Government Star / Seal Accent -->
+  <circle cx="32" cy="48" r="1.5" fill="#f59e0b"/>
+</svg>

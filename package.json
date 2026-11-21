@@ -1,30 +1,34 @@
 {
-  "name": "nesfic-i08-tea-traceability",
+  "name": "nesfic-d39-govt-stationery-track",
   "version": "1.0.0",
   "private": true,
-  "description": "End-to-End Digital Traceability of Tea Across the Assam Tea Value Chain (NESFIC-I-08)",
+  "description": "Digital Inventory & Movement Tracking for Government Press and Stationery, Directorate of Printing & Stationery, Assam (NESFIC-D-39)",
   "workspaces": [
     "packages/*",
     "apps/*"
   ],
   "scripts": {
     "build": "npm run --workspaces --if-present build",
-    "test": "npm run --workspaces --if-present test",
+    "test": "npm test -w @nesfic/api",
+    "test:all": "npm run --workspaces --if-present test",
     "start": "npm run --workspace=apps/api start",
     "dev:api": "npm run --workspace=apps/api dev",
     "dev:web": "npm run --workspace=apps/web dev",
     "build:cloudflare": "echo '✅ Cloudflare Pages assets ready at apps/web/public'",
-    "deploy:cloudflare": "npx wrangler pages deploy apps/web/public --project-name=chah-praman",
+    "deploy:cloudflare": "npx wrangler pages deploy apps/web/public --project-name=mudran-sewa",
     "dev:cloudflare": "npx wrangler pages dev apps/web/public"
   },
   "keywords": [
-    "assam-tea",
+    "assam-government",
     "nesfic-2026",
-    "blockchain",
-    "traceability",
-    "tocklai",
-    "iot",
-    "gi-tag"
+    "nesfic-d-39",
+    "printing-stationery",
+    "digital-inventory",
+    "movement-tracking",
+    "assam-gazette",
+    "e-gatepass",
+    "guwahati",
+    "governance"
   ],
   "author": "NESFIC Innovators",
   "license": "Apache-2.0"

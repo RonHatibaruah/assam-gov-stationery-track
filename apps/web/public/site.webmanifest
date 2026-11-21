@@ -1,0 +1,16 @@
+{
+  "name": "Assam Government Press & Stationery Tracker | NESFIC-D-39",
+  "short_name": "MudranSewa",
+  "description": "Digital Inventory & Movement Tracking for Government Press and Stationery, Directorate of Printing & Stationery, Assam",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#004d40",
+  "theme_color": "#004d40",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

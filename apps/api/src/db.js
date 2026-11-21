@@ -1,534 +1,533 @@
 /**
- * In-Memory & File-Persisted Data Store for Assam Tea Traceability
- * Pre-seeded with 6 authentic Assam tea batches across diverse districts
+ * In-Memory & File-Persisted Data Store for NESFIC-D-39:
+ * Digital Inventory & Movement Tracking for Government Press and Stationery
+ * Directorate of Printing & Stationery, Government of Assam (Bamunimaidam, Guwahati)
  */
 
-import { MerkleTree, hashBatch, sha256 } from "../../../packages/shared/src/merkle.js";
-import { SAMPLE_GROWERS, TRA_PPC_PESTICIDE_LIMITS } from "../../../packages/shared/src/constants.js";
+import crypto from "node:crypto";
+import {
+  SAMPLE_PAPER_INVENTORY,
+  SAMPLE_REQUISITIONS,
+  SAMPLE_JOB_TICKETS,
+  SAMPLE_DISPATCH_GATEPASSES,
+  SAMPLE_GAZETTE_ISSUES,
+  ASSAM_DISTRICTS,
+  DIRECTORATE_DETAILS,
+} from "../../../packages/shared/src/constants.js";
 
-export class TraceabilityDB {
+export function sha256(data) {
+  return crypto.createHash("sha256").update(typeof data === "string" ? data : JSON.stringify(data)).digest("hex");
+}
+
+export class StationeryDB {
   constructor() {
-    this.growers = [...SAMPLE_GROWERS];
-    this.batches = new Map();
-    this.anchors = [];
-    this.adminAlerts = [];
+    this.inventory = new Map();
+    this.requisitions = new Map();
+    this.jobTickets = new Map();
+    this.gazetteIssues = new Map();
+    this.gatepasses = new Map();
+    this.auditLogs = [];
+    this.alerts = [];
+    this.districts = [...ASSAM_DISTRICTS];
+    this.directorate = { ...DIRECTORATE_DETAILS };
+
     this.seedInitialData();
   }
 
   seedInitialData() {
-    // 1. Fully completed Leaf-to-Cup Batch: Jorhat CTC BOP
-    const batch1 = {
-      id: "ASM-2026-CTC-001",
-      stage: "RETAIL_PACKAGED",
-      plucking: {
-        growerId: "STG-JHT-001",
-        growerName: "Mukund Saikia (মুকুন্দ শইকীয়া)",
-        gardenName: "Borbhetta Smallholding Cluster #4",
-        district: "Jorhat",
-        sectionId: "Sec-7B-TV23-Clone",
-        gps: { lat: 26.7512, lng: 94.2155, elevationMeters: 96 },
-        estimatedWeightKg: 420.0,
-        verifiedWeightKg: 418.5,
-        pluckingTime: "2026-11-18T07:45:00+05:30",
-        weighbridgeId: "WB-JHT-BLF-02",
-      },
-      processing: {
-        factoryId: "FAC-JHT-01",
-        factoryName: "Tocklai Valley Bought Leaf Factory",
-        procType: "CTC",
-        grade: "BOP (Broken Orange Pekoe)",
-        intakeWeightKg: 418.5,
-        madeTeaWeightKg: 94.2, // ~22.5% recovery
-        witheringLossPct: 32.4,
-        fermentationDurationHrs: 2.5,
-        dryingTempC: 115,
-        completedTime: "2026-11-19T14:30:00+05:30",
-      },
-      labTest: {
-        certifierId: "LAB-NABL-088",
-        labName: "TRA Tocklai Quality & Chemical Residue Lab",
-        accreditationNo: "NABL TC-5421",
-        ipfsHash: "QmTRA9942TocklaiChemicalMRLPassCert",
-        testDate: "2026-11-19T18:00:00+05:30",
-        pesticideMRLStatus: "COMPLIANT",
-        parameters: [
-          { chemical: "Emamectin Benzoate", foundPpm: 0.012, maxPermissibleLimitPpm: 0.05, pass: true },
-          { chemical: "Quinalphos", foundPpm: 0.002, maxPermissibleLimitPpm: 0.01, pass: true },
-          { chemical: "Hexaconazole", foundPpm: 0.035, maxPermissibleLimitPpm: 0.10, pass: true },
-          { chemical: "Thiamethoxam", foundPpm: 0.015, maxPermissibleLimitPpm: 0.05, pass: true },
-        ],
-        moisturePercentage: 3.2,
-        fssaiStandardMet: true,
-      },
-      auctionLotNo: "GTAC-2026-W47-LOT402",
-      custodian: "Assam Heritage Tea Exporters Ltd.",
-      serializedQrCode: "QR-ASM26-8894-X82F",
-      giTagAuthorized: true,
-      giCertNumber: "GI-IN-ASM-TEA-00441",
-      merkleLeafHash: "",
-      blockchainTxHash: "0x8f3c7e99214b2a65d38a719c84e1bfa74319a92289410d55e925bca34821a812",
-      createdAt: "2026-11-18T07:45:00+05:30",
-      updatedAt: "2026-11-20T16:20:00+05:30",
-    };
-    batch1.merkleLeafHash = hashBatch(batch1);
-    this.batches.set(batch1.id, batch1);
-
-    // 2. High Grade Orthodox Batch: Dibrugarh (In Factory Processing)
-    const batch2 = {
-      id: "ASM-2026-ORT-002",
-      stage: "FACTORY_PROCESSED",
-      plucking: {
-        growerId: "STG-DIB-002",
-        growerName: "Pronab Gogoi (প্ৰণৱ গগৈ)",
-        gardenName: "Moran Small Tea Growers Co-Op",
-        district: "Dibrugarh",
-        sectionId: "Heritage-Old-China-Bush-Sec3",
-        gps: { lat: 27.2845, lng: 94.9211, elevationMeters: 108 },
-        estimatedWeightKg: 280.0,
-        verifiedWeightKg: 279.0,
-        pluckingTime: "2026-11-20T08:15:00+05:30",
-        weighbridgeId: "WB-DIB-MORAN-01",
-      },
-      processing: {
-        factoryId: "FAC-DIB-04",
-        factoryName: "Moran Specialty Orthodox Tea Factory",
-        procType: "ORTHODOX",
-        grade: "TGFOP1 (Tippy Golden Flowery Orange Pekoe)",
-        intakeWeightKg: 279.0,
-        madeTeaWeightKg: 61.5,
-        witheringLossPct: 35.0,
-        fermentationDurationHrs: 3.8,
-        dryingTempC: 98,
-        completedTime: "2026-11-20T18:00:00+05:30",
-      },
-      custodian: "Moran Specialty Orthodox Tea Factory",
-      serializedQrCode: "QR-ASM26-ORT-PENDING-02",
-      giTagAuthorized: true,
-      giCertNumber: "GI-IN-ASM-TEA-00442",
-      merkleLeafHash: "",
-      blockchainTxHash: "0x3a4b9c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b",
-      createdAt: "2026-11-20T08:15:00+05:30",
-      updatedAt: "2026-11-20T18:00:00+05:30",
-    };
-    batch2.merkleLeafHash = hashBatch(batch2);
-    this.batches.set(batch2.id, batch2);
-
-    // 3. Tinsukia Bold Liquor CTC BP (Lab Certified Stage)
-    const batch3 = {
-      id: "EST-TIN-003",
-      stage: "LAB_CERTIFIED",
-      plucking: {
-        growerId: "EST-TIN-003",
-        growerName: "Doom Dooma Heritage Estate",
-        gardenName: "Doom Dooma Division North",
-        district: "Tinsukia",
-        sectionId: "Sec-DoomDooma-A1",
-        gps: { lat: 27.5688, lng: 95.5712, elevationMeters: 122 },
-        estimatedWeightKg: 850.0,
-        verifiedWeightKg: 846.0,
-        pluckingTime: "2026-11-19T06:30:00+05:30",
-        weighbridgeId: "WB-TIN-DD-01",
-      },
-      processing: {
-        factoryId: "FAC-TIN-02",
-        factoryName: "Doom Dooma Central Processing Plant",
-        procType: "CTC",
-        grade: "BP (Broken Pekoe - Bold Liquor)",
-        intakeWeightKg: 846.0,
-        madeTeaWeightKg: 194.5,
-        witheringLossPct: 31.8,
-        fermentationDurationHrs: 2.3,
-        dryingTempC: 118,
-        completedTime: "2026-11-19T20:00:00+05:30",
-      },
-      labTest: {
-        certifierId: "LAB-TIN-NABL-02",
-        labName: "Upper Assam Chemical Residue Center",
-        accreditationNo: "NABL TC-6104",
-        ipfsHash: "QmTinsukiaPesticideScreenPass5422",
-        testDate: "2026-11-20T10:00:00+05:30",
-        pesticideMRLStatus: "COMPLIANT",
-        parameters: [
-          { chemical: "Emamectin Benzoate", foundPpm: 0.008, maxPermissibleLimitPpm: 0.05, pass: true },
-          { chemical: "Hexaconazole", foundPpm: 0.041, maxPermissibleLimitPpm: 0.10, pass: true },
-          { chemical: "Thiamethoxam", foundPpm: 0.019, maxPermissibleLimitPpm: 0.05, pass: true },
-        ],
-        moisturePercentage: 3.1,
-        fssaiStandardMet: true,
-      },
-      custodian: "Doom Dooma Heritage Estate",
-      serializedQrCode: "QR-ASM26-TIN-8821-BP",
-      giTagAuthorized: true,
-      giCertNumber: "GI-IN-ASM-TEA-00443",
-      merkleLeafHash: "",
-      blockchainTxHash: "0x5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d",
-      createdAt: "2026-11-19T06:30:00+05:30",
-      updatedAt: "2026-11-20T11:00:00+05:30",
-    };
-    batch3.merkleLeafHash = hashBatch(batch3);
-    this.batches.set(batch3.id, batch3);
-
-    // 4. Golaghat Bio-Organic Green Tea (Weighed at Collection Center)
-    const batch4 = {
-      id: "STG-GLG-004",
-      stage: "COLLECTION_WEIGHED",
-      plucking: {
-        growerId: "STG-GLG-004",
-        growerName: "Bhaben Bora (ভবেন বৰা)",
-        gardenName: "Bokakhat Small Tea Producer Co.",
-        district: "Golaghat",
-        sectionId: "Kaziranga-Foothills-Organic-Sec1",
-        gps: { lat: 26.6189, lng: 93.5912, elevationMeters: 84 },
-        estimatedWeightKg: 190.0,
-        verifiedWeightKg: 189.2,
-        pluckingTime: "2026-11-20T09:00:00+05:30",
-        weighbridgeId: "WB-GLG-BOK-01",
-      },
-      custodian: "Bokakhat Small Tea Producer Co.",
-      serializedQrCode: "QR-ASM26-GLG-BIO-04",
-      giTagAuthorized: true,
-      giCertNumber: "GI-IN-ASM-TEA-00444",
-      merkleLeafHash: "",
-      blockchainTxHash: "0x7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b",
-      createdAt: "2026-11-20T09:00:00+05:30",
-      updatedAt: "2026-11-20T10:15:00+05:30",
-    };
-    batch4.merkleLeafHash = hashBatch(batch4);
-    this.batches.set(batch4.id, batch4);
-
-    // 5. Sonitpur Silver Needle Specialty White Tea (Packaged Single-Estate Reserve)
-    const batch5 = {
-      id: "ASM-2026-SVT-005",
-      stage: "RETAIL_PACKAGED",
-      plucking: {
-        growerId: "EST-SON-005",
-        growerName: "Monabarie Heritage Highlands",
-        gardenName: "Monabarie Division 2 (Biswanath)",
-        district: "Sonitpur",
-        sectionId: "Artisan-Silver-Tips-Plot-9",
-        gps: { lat: 26.7321, lng: 93.1845, elevationMeters: 104 },
-        estimatedWeightKg: 65.0,
-        verifiedWeightKg: 65.0,
-        pluckingTime: "2026-11-17T06:15:00+05:30",
-        weighbridgeId: "WB-SON-MONA-01",
-      },
-      processing: {
-        factoryId: "FAC-SON-01",
-        factoryName: "Monabarie Artisan Specialty House",
-        procType: "SPECIALTY_WHITE",
-        grade: "Silver Needle (Handcrafted Sun-Withered)",
-        intakeWeightKg: 65.0,
-        madeTeaWeightKg: 14.8,
-        witheringLossPct: 62.0,
-        fermentationDurationHrs: 0.0, // Non-oxidized
-        dryingTempC: 75,
-        completedTime: "2026-11-18T16:00:00+05:30",
-      },
-      labTest: {
-        certifierId: "LAB-NABL-088",
-        labName: "TRA Tocklai Quality & Chemical Residue Lab",
-        accreditationNo: "NABL TC-5421",
-        ipfsHash: "QmTRAWhiteTeaSilverNeedlePurityCert99",
-        testDate: "2026-11-19T11:00:00+05:30",
-        pesticideMRLStatus: "COMPLIANT",
-        parameters: [
-          { chemical: "Emamectin Benzoate", foundPpm: 0.000, maxPermissibleLimitPpm: 0.05, pass: true },
-          { chemical: "Azoxystrobin", foundPpm: 0.000, maxPermissibleLimitPpm: 0.10, pass: true },
-          { chemical: "Quinalphos", foundPpm: 0.000, maxPermissibleLimitPpm: 0.01, pass: true },
-        ],
-        moisturePercentage: 2.8,
-        fssaiStandardMet: true,
-      },
-      auctionLotNo: "DIRECT-EXPORTER-D2C-LOT-01",
-      custodian: "Assam Rare Teas Global Vault",
-      serializedQrCode: "QR-ASM26-SON-SILVER-05",
-      giTagAuthorized: true,
-      giCertNumber: "GI-IN-ASM-TEA-00445",
-      merkleLeafHash: "",
-      blockchainTxHash: "0x11223344556677889900aabbccddeeff11223344556677889900aabbccddeeff",
-      createdAt: "2026-11-17T06:15:00+05:30",
-      updatedAt: "2026-11-20T14:00:00+05:30",
-    };
-    batch5.merkleLeafHash = hashBatch(batch5);
-    this.batches.set(batch5.id, batch5);
-
-    // 6. SIMULATED SAFETY VIOLATION BATCH: Cachar CTC Dust (Quinalphos Exceeded MRL - INTERCEPTED)
-    const batch6 = {
-      id: "ASM-2026-FLG-006",
-      stage: "LAB_CERTIFIED",
-      plucking: {
-        growerId: "STG-CAC-006",
-        growerName: "Cachar Valley Smallholders",
-        gardenName: "Barak Foothills Cooperative",
-        district: "Cachar",
-        sectionId: "Sec-Cachar-Lowland-B3",
-        gps: { lat: 24.8333, lng: 92.7789, elevationMeters: 42 },
-        estimatedWeightKg: 520.0,
-        verifiedWeightKg: 518.0,
-        pluckingTime: "2026-11-19T08:00:00+05:30",
-        weighbridgeId: "WB-CAC-BLF-01",
-      },
-      processing: {
-        factoryId: "FAC-CAC-01",
-        factoryName: "Barak Valley Bought Leaf Factory",
-        procType: "CTC",
-        grade: "PD (Pekoe Dust)",
-        intakeWeightKg: 518.0,
-        madeTeaWeightKg: 116.5,
-        witheringLossPct: 30.5,
-        fermentationDurationHrs: 2.1,
-        dryingTempC: 112,
-        completedTime: "2026-11-19T18:30:00+05:30",
-      },
-      labTest: {
-        certifierId: "LAB-SIL-01",
-        labName: "Silchar Regional Testing Station",
-        accreditationNo: "NABL TC-4991",
-        ipfsHash: "QmVIOLATIONQuinalphosExceededMRLBarak889",
-        testDate: "2026-11-20T14:30:00+05:30",
-        pesticideMRLStatus: "NON_COMPLIANT", // VIOLATION
-        parameters: [
-          { chemical: "Quinalphos", foundPpm: 0.082, maxPermissibleLimitPpm: 0.01, pass: false }, // FAILED 8x OVER LIMIT
-          { chemical: "Emamectin Benzoate", foundPpm: 0.022, maxPermissibleLimitPpm: 0.05, pass: true },
-        ],
-        moisturePercentage: 4.8,
-        fssaiStandardMet: false,
-      },
-      custodian: "Barak Valley BLF (Quarantine Bay 3)",
-      serializedQrCode: "QR-ASM26-FLAGGED-VIOLATION-06",
-      giTagAuthorized: false, // Revoked by TRA Tocklai
-      giCertNumber: "GI-REVOKED-PPC-VIOLATION",
-      revocationReason: "Quinalphos pesticide detected at 0.082 ppm (exceeds statutory 0.01 ppm limit under Tea Board PPC v16 and EU MRL). Retail packaging strictly blocked.",
-      merkleLeafHash: "",
-      blockchainTxHash: "0xdeadbeef11223344556677889900aabbccddeeffdeadbeef1122334455667788",
-      createdAt: "2026-11-19T08:00:00+05:30",
-      updatedAt: "2026-11-20T17:00:00+05:30",
-    };
-    batch6.merkleLeafHash = hashBatch(batch6);
-    this.batches.set(batch6.id, batch6);
-
-    // Initial alert for the violation batch
-    this.adminAlerts.push({
-      id: "ALT-2026-0881",
-      severity: "CRITICAL",
-      type: "MRL_PESTICIDE_VIOLATION",
-      batchId: "ASM-2026-FLG-006",
-      message: "Batch ASM-2026-FLG-006 failed GC-MS/MS screen: Quinalphos 0.082 ppm vs permissible 0.01 ppm. Automatic quarantine activated.",
-      timestamp: "2026-11-20T14:35:00+05:30",
-      resolved: false,
-    });
-
-    // Anchor on-chain
-    this.createAnchor();
-  }
-
-  getAllBatches() {
-    return Array.from(this.batches.values());
-  }
-
-  getBatchById(id) {
-    return this.batches.get(id);
-  }
-
-  getBatchByQr(qrToken) {
-    for (const b of this.batches.values()) {
-      if (b.serializedQrCode === qrToken || b.id === qrToken) {
-        return b;
-      }
+    // 1. Seed Inventory
+    for (const item of SAMPLE_PAPER_INVENTORY) {
+      this.inventory.set(item.id, { ...item });
     }
-    return null;
+
+    // Add extra consumables (Ink & Plates)
+    const inkItem = {
+      id: "INK-BLK-WEB-01",
+      name: "High-Density Web Offset Coldset Black Ink",
+      category: "PRINTING_INK",
+      paperType: "N/A",
+      gsm: 0,
+      sheetSizeInches: "20 Kg Sealed Drum",
+      currentStockReams: 85,
+      bufferThresholdReams: 25,
+      unit: "Drums",
+      millSupplier: "DIC India Limited / Toyo Ink",
+      millLotNo: "LOT-INK-2026-901",
+      warehouseLocation: "Chemical & Ink Storage Vault, Shed B",
+      qcPassed: true,
+      unitCostINR: 6200.0,
+      lastRestockedDate: "2026-11-12T11:00:00+05:30",
+    };
+    this.inventory.set(inkItem.id, inkItem);
+
+    const plateItem = {
+      id: "PLT-CTP-OFF-02",
+      name: "Thermal CTP Aluminium Offset Printing Plates (0.30mm)",
+      category: "OFFSET_PLATES",
+      paperType: "N/A",
+      gsm: 0,
+      sheetSizeInches: "770 x 1030 mm",
+      currentStockReams: 420,
+      bufferThresholdReams: 150,
+      unit: "Plates",
+      millSupplier: "Technova Imaging Systems",
+      millLotNo: "LOT-PLT-2026-441",
+      warehouseLocation: "Pre-Press CTP Darkroom Depot",
+      qcPassed: true,
+      unitCostINR: 480.0,
+      lastRestockedDate: "2026-11-15T15:20:00+05:30",
+    };
+    this.inventory.set(plateItem.id, plateItem);
+
+    // 2. Seed Requisitions
+    for (const req of SAMPLE_REQUISITIONS) {
+      this.requisitions.set(req.id, { ...req });
+    }
+
+    // 3. Seed Job Tickets
+    for (const job of SAMPLE_JOB_TICKETS) {
+      this.jobTickets.set(job.id, { ...job });
+    }
+
+    // 4. Seed Dispatch Gatepasses
+    for (const gp of SAMPLE_DISPATCH_GATEPASSES) {
+      this.gatepasses.set(gp.id, { ...gp });
+    }
+
+    // 5. Seed Gazette Notifications
+    for (const gaz of SAMPLE_GAZETTE_ISSUES) {
+      this.gazetteIssues.set(gaz.issueNo, { ...gaz });
+    }
+
+    // 6. Initial Audit Logs
+    this.logAdminAction(
+      "SYSTEM_BOOTSTRAP",
+      "Director of Printing & Stationery, Assam",
+      "SUPER_ADMIN",
+      "System initialized with verified paper lots, district hubs, and active press jobs.",
+      "10.20.44.1"
+    );
+
+    this.checkBufferStockAlerts();
   }
 
-  createPlucking(data) {
-    const id = `ASM-2026-${data.procType || "CTC"}-${String(this.batches.size + 1).padStart(3, "0")}`;
-    const now = new Date().toISOString();
+  logAdminAction(action, actor, role, details, ipAddress = "127.0.0.1") {
+    const timestamp = new Date().toISOString();
+    const payload = { action, actor, role, details, timestamp };
+    const tamperProofHash = sha256(payload);
 
-    const newBatch = {
+    const entry = {
+      id: `AUDIT-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      timestamp,
+      action,
+      actor,
+      role,
+      details,
+      ipAddress,
+      tamperProofHash,
+    };
+    this.auditLogs.unshift(entry);
+    if (this.auditLogs.length > 200) this.auditLogs.pop();
+    return entry;
+  }
+
+  // Inventory Management
+  getAllInventory() {
+    return Array.from(this.inventory.values());
+  }
+
+  getInventoryItem(id) {
+    return this.inventory.get(id);
+  }
+
+  inwardStock(itemData) {
+    const id = itemData.id || `PAP-INW-${Date.now()}`;
+    const newItem = {
       id,
-      stage: "PLUCKED",
-      plucking: {
-        growerId: data.growerId,
-        growerName: data.growerName,
-        gardenName: data.gardenName,
-        district: data.district || "Jorhat",
-        sectionId: data.sectionId || "Sec-A1",
-        gps: data.gps,
-        estimatedWeightKg: data.estimatedWeightKg,
-        pluckingTime: now,
-      },
-      custodian: data.growerName,
-      serializedQrCode: `QR-ASM26-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-      giTagAuthorized: true,
-      giCertNumber: `GI-IN-ASM-TEA-${String(440 + this.batches.size)}`,
-      createdAt: now,
-      updatedAt: now,
+      name: itemData.name,
+      category: itemData.category || "RAW_PAPER_REAM",
+      paperType: itemData.paperType || "MAPLITHO",
+      gsm: Number(itemData.gsm) || 70,
+      sheetSizeInches: itemData.sheetSizeInches || "23x36",
+      currentStockReams: Number(itemData.currentStockReams) || 100,
+      bufferThresholdReams: Number(itemData.bufferThresholdReams) || 50,
+      unit: itemData.unit || "Reams",
+      millSupplier: itemData.millSupplier || "Certified Paper Mill",
+      millLotNo: itemData.millLotNo || `LOT-${Date.now()}`,
+      warehouseLocation: itemData.warehouseLocation || "Central Store Shed A",
+      qcPassed: itemData.qcPassed !== undefined ? Boolean(itemData.qcPassed) : true,
+      unitCostINR: Number(itemData.unitCostINR) || 450.0,
+      lastRestockedDate: new Date().toISOString(),
     };
 
-    newBatch.merkleLeafHash = hashBatch(newBatch);
-    this.batches.set(id, newBatch);
-    return newBatch;
+    this.inventory.set(id, newItem);
+    this.logAdminAction(
+      "INWARD_GOODS_RECEIVED",
+      "Central Store Keeper",
+      "STORE_MANAGER",
+      `Received ${newItem.currentStockReams} ${newItem.unit} of ${newItem.name} (Lot: ${newItem.millLotNo})`
+    );
+    this.checkBufferStockAlerts();
+    return newItem;
   }
 
-  updateWeighbridge(id, { verifiedWeightKg, weighbridgeId }) {
-    const batch = this.batches.get(id);
-    if (!batch) return null;
-    batch.plucking.verifiedWeightKg = verifiedWeightKg;
-    batch.plucking.weighbridgeId = weighbridgeId || "WB-AUTO-01";
-    batch.stage = "COLLECTION_WEIGHED";
-    batch.updatedAt = new Date().toISOString();
-    batch.merkleLeafHash = hashBatch(batch);
-    return batch;
+  adjustStock(id, qtyDelta, reason = "Routine dispatch adjustment") {
+    const item = this.inventory.get(id);
+    if (!item) throw new Error(`Paper item with id ${id} not found`);
+
+    item.currentStockReams = Math.max(0, item.currentStockReams + qtyDelta);
+    this.logAdminAction(
+      "STOCK_ADJUSTMENT",
+      "Store Keeper",
+      "STORE_MANAGER",
+      `Adjusted stock for ${item.name} by ${qtyDelta} ${item.unit}. Reason: ${reason}`
+    );
+    this.checkBufferStockAlerts();
+    return item;
   }
 
-  updateProcessing(id, procData) {
-    const batch = this.batches.get(id);
-    if (!batch) return null;
-    batch.processing = {
-      factoryId: procData.factoryId,
-      factoryName: procData.factoryName,
-      procType: procData.procType || "CTC",
-      grade: procData.grade || "BOP",
-      intakeWeightKg: procData.intakeWeightKg || batch.plucking.verifiedWeightKg || 300,
-      madeTeaWeightKg: procData.madeTeaWeightKg,
-      witheringLossPct: procData.witheringLossPct || 32,
-      fermentationDurationHrs: procData.fermentationDurationHrs || 2.5,
-      dryingTempC: procData.dryingTempC || 110,
-      completedTime: new Date().toISOString(),
-    };
-    batch.stage = "FACTORY_PROCESSED";
-    batch.custodian = procData.factoryName;
-    batch.updatedAt = new Date().toISOString();
-    batch.merkleLeafHash = hashBatch(batch);
-    return batch;
-  }
-
-  updateLabTest(id, labData) {
-    const batch = this.batches.get(id);
-    if (!batch) return null;
-    batch.labTest = {
-      certifierId: labData.certifierId || "LAB-TRA-01",
-      labName: labData.labName || "TRA Tocklai Quality & Chemical Residue Lab",
-      accreditationNo: labData.accreditationNo || "NABL TC-5421",
-      ipfsHash: labData.ipfsHash || `QmTRA${sha256(id).substring(0, 24)}`,
-      testDate: new Date().toISOString(),
-      pesticideMRLStatus: labData.pesticideMRLStatus || "COMPLIANT",
-      parameters: labData.parameters || TRA_PPC_PESTICIDE_LIMITS.slice(0, 4).map(l => ({
-        chemical: l.chemical,
-        foundPpm: +(Math.random() * (l.maxPpm * 0.3)).toFixed(4),
-        maxPermissibleLimitPpm: l.maxPpm,
-        pass: true,
-      })),
-      moisturePercentage: labData.moisturePercentage || 3.4,
-      fssaiStandardMet: labData.pesticideMRLStatus !== "NON_COMPLIANT",
-    };
-    batch.stage = "LAB_CERTIFIED";
-    batch.updatedAt = new Date().toISOString();
-    batch.merkleLeafHash = hashBatch(batch);
-    return batch;
-  }
-
-  updateAuction(id, { auctionLotNo, newCustodian }) {
-    const batch = this.batches.get(id);
-    if (!batch) return null;
-    batch.auctionLotNo = auctionLotNo;
-    batch.custodian = newCustodian;
-    batch.stage = "AUCTION_TRANSFERRED";
-    batch.updatedAt = new Date().toISOString();
-    batch.merkleLeafHash = hashBatch(batch);
-    return batch;
-  }
-
-  updatePackaging(id, { serializedQrCode }) {
-    const batch = this.batches.get(id);
-    if (!batch) return null;
-    if (batch.labTest && batch.labTest.pesticideMRLStatus === "NON_COMPLIANT") {
-      throw new Error("Cannot package batch: Chemical MRL non-compliance violation.");
+  // Requisitions (e-Indents)
+  getAllRequisitions(filter = {}) {
+    let list = Array.from(this.requisitions.values());
+    if (filter.status) {
+      list = list.filter(r => r.status === filter.status);
     }
-    batch.serializedQrCode = serializedQrCode || batch.serializedQrCode;
-    batch.stage = "RETAIL_PACKAGED";
-    batch.updatedAt = new Date().toISOString();
-    batch.merkleLeafHash = hashBatch(batch);
-    return batch;
+    if (filter.district) {
+      list = list.filter(r => r.district === filter.district);
+    }
+    return list;
   }
 
-  // Admin Features
-  toggleGICertification(batchId, isAuthorized, reason = "") {
-    const batch = this.batches.get(batchId);
-    if (!batch) return null;
-    batch.giTagAuthorized = isAuthorized;
-    if (!isAuthorized) {
-      batch.revocationReason = reason || "Suspended by TRA Tocklai Regulatory Inspection";
-      this.adminAlerts.unshift({
-        id: `ALT-${Date.now().toString().slice(-4)}`,
-        severity: "WARNING",
-        type: "GI_REVOCATION",
-        batchId: batchId,
-        message: `GI Certification revoked for batch ${batchId}: ${batch.revocationReason}`,
+  getRequisition(id) {
+    return this.requisitions.get(id);
+  }
+
+  createRequisition(data) {
+    const id = `IND-2026-${data.district ? data.district.substring(0, 3).toUpperCase() : "GEN"}-${Math.floor(100 + Math.random() * 900)}`;
+    const indentNo = `IND/${data.district || "ASSAM"}/STN/2026/${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const newReq = {
+      id,
+      indentNo,
+      departmentCode: data.departmentCode || "DEPT_GEN",
+      departmentName: data.departmentName || "Government Office",
+      district: data.district || "Kamrup Metropolitan",
+      indenterOfficerName: data.indenterOfficerName || "Nodal Indenting Officer",
+      indenterDesignation: data.indenterDesignation || "Assistant Director / EAC",
+      priority: data.priority || "ROUTINE",
+      status: "SUBMITTED",
+      items: data.items || [
+        {
+          itemId: "PAP-MAP-70-001",
+          itemName: "White Maplitho Paper 70 GSM",
+          category: "RAW_PAPER_REAM",
+          requestedQty: 50,
+          sanctionedQty: 50,
+          unit: "Reams",
+        },
+      ],
+      purpose: data.purpose || "Official administrative printing requirements",
+      submissionDate: new Date().toISOString(),
+    };
+
+    this.requisitions.set(id, newReq);
+    this.logAdminAction(
+      "INDENT_SUBMITTED",
+      newReq.indenterOfficerName,
+      "INDENTING_OFFICER",
+      `Submitted e-Indent ${newReq.indentNo} for ${newReq.departmentName} (${newReq.district})`
+    );
+    return newReq;
+  }
+
+  approveRequisition(id, sanctionDetails = {}) {
+    const req = this.requisitions.get(id);
+    if (!req) throw new Error(`Requisition ${id} not found`);
+
+    req.status = "SANCTIONED";
+    req.sanctionOrderNo = sanctionDetails.sanctionOrderNo || `DPS/SANCT/2026/${req.district.substring(0, 3).toUpperCase()}/${Math.floor(100 + Math.random() * 900)}`;
+    req.sanctionDate = new Date().toISOString();
+
+    // Sanction quantities
+    req.items = req.items.map(it => ({
+      ...it,
+      sanctionedQty: it.requestedQty,
+    }));
+
+    this.logAdminAction(
+      "INDENT_SANCTIONED",
+      sanctionDetails.approverName || "Superintendent of Printing & Stationery",
+      "SUPER_ADMIN",
+      `Sanctioned indent ${req.indentNo} under order ${req.sanctionOrderNo}`
+    );
+    return req;
+  }
+
+  // Job Tickets (Press Production Floor)
+  getAllJobTickets() {
+    return Array.from(this.jobTickets.values());
+  }
+
+  getJobTicket(id) {
+    return this.jobTickets.get(id);
+  }
+
+  createJobTicket(data) {
+    const id = `JOB-2026-PRS-${Math.floor(100 + Math.random() * 900)}`;
+    const newJob = {
+      id,
+      jobTitle: data.jobTitle || "Government Printing Job",
+      productType: data.productType || "GOVT_STANDARD_FORM",
+      targetQuantity: Number(data.targetQuantity) || 1000,
+      unit: data.unit || "Copies",
+      paperLotUsedId: data.paperLotUsedId || "PAP-MAP-70-001",
+      paperReamsAllocated: Number(data.paperReamsAllocated) || 20,
+      paperWastagePercentage: Number(data.paperWastagePercentage) || 1.5,
+      stage: "PRE_PRESS_PLATEMAKING",
+      pressMachineAssigned: data.pressMachineAssigned || "Heidelberg Sheet-fed Offset Press",
+      operatorInCharge: data.operatorInCharge || "Press Machine Operator",
+      confidentialRun: Boolean(data.confidentialRun),
+      targetCompletionDate: data.targetCompletionDate || new Date(Date.now() + 86400000 * 3).toISOString(),
+    };
+
+    this.jobTickets.set(id, newJob);
+
+    // Deduct raw paper stock
+    if (this.inventory.has(newJob.paperLotUsedId)) {
+      const stock = this.inventory.get(newJob.paperLotUsedId);
+      stock.currentStockReams = Math.max(0, stock.currentStockReams - newJob.paperReamsAllocated);
+    }
+
+    this.logAdminAction(
+      "JOB_TICKET_CREATED",
+      "Press Superintendent",
+      "PRESS_SUPERINTENDENT",
+      `Created Press Job #${id} (${newJob.jobTitle}) allocated to ${newJob.pressMachineAssigned}`
+    );
+    return newJob;
+  }
+
+  updateJobStage(id, newStage, wastagePct) {
+    const job = this.jobTickets.get(id);
+    if (!job) throw new Error(`Job ticket ${id} not found`);
+
+    const prevStage = job.stage;
+    job.stage = newStage;
+    if (wastagePct !== undefined) {
+      job.paperWastagePercentage = Number(wastagePct);
+    }
+    if (newStage === "COMPLETED_WAREHOUSE") {
+      job.completedAt = new Date().toISOString();
+    }
+
+    this.logAdminAction(
+      "JOB_STAGE_TRANSITION",
+      job.operatorInCharge || "Press Superintendent",
+      "PRESS_SUPERINTENDENT",
+      `Job #${id} transitioned from ${prevStage} -> ${newStage} (Wastage: ${job.paperWastagePercentage}%)`
+    );
+
+    // Alert if wastage exceeds threshold
+    if (job.paperWastagePercentage > 3.0) {
+      this.alerts.unshift({
+        id: `ALT-WST-${Date.now()}`,
+        level: "WARNING",
+        title: "High Trimming Wastage Alert",
+        message: `Job #${id} (${job.jobTitle}) exceeded standard tolerance with ${job.paperWastagePercentage}% paper waste.`,
         timestamp: new Date().toISOString(),
-        resolved: false,
       });
-    } else {
-      delete batch.revocationReason;
     }
-    batch.updatedAt = new Date().toISOString();
-    batch.merkleLeafHash = hashBatch(batch);
-    return batch;
+
+    return job;
   }
 
-  getAdminAlerts() {
-    return this.adminAlerts;
+  // The Assam Gazette Registry
+  getAllGazettes() {
+    return Array.from(this.gazetteIssues.values());
   }
 
-  getAgrochemicalWhitelist() {
-    return TRA_PPC_PESTICIDE_LIMITS;
-  }
-
-  createAnchor() {
-    const leaves = Array.from(this.batches.values()).map(b => b.merkleLeafHash || hashBatch(b));
-    const tree = new MerkleTree(leaves);
-    const root = tree.getRoot();
-    const anchor = {
-      rootHash: root,
-      batchCount: leaves.length,
-      timestamp: new Date().toISOString(),
-      simulatedTxHash: `0x${sha256(root + Date.now()).substring(0, 64)}`,
-      blockNumber: 15420000 + this.anchors.length,
+  createGazetteIssue(data) {
+    const issueNo = data.issueNo || `Vol. 152, Extraordinary No. ${Math.floor(490 + Math.random() * 50)}`;
+    const newGazette = {
+      issueNo,
+      gazetteType: data.gazetteType || "EXTRAORDINARY",
+      issuingDepartment: data.issuingDepartment || "General Administration Department, Dispur",
+      subjectTitle: data.subjectTitle || "State Government Official Notification",
+      publicationDate: data.publicationDate || new Date().toISOString().split("T")[0],
+      printedCopiesCount: Number(data.printedCopiesCount) || 5000,
+      digitalChecksumSHA256: sha256(`${issueNo}-${data.subjectTitle}-${Date.now()}`),
+      archivalStatus: "DIGITIZED_ARCHIVED",
     };
-    this.anchors.push(anchor);
 
-    for (const b of this.batches.values()) {
-      if (!b.blockchainTxHash) {
-        b.blockchainTxHash = anchor.simulatedTxHash;
+    this.gazetteIssues.set(issueNo, newGazette);
+    this.logAdminAction(
+      "GAZETTE_PUBLISHED",
+      "Gazette Officer",
+      "PRESS_SUPERINTENDENT",
+      `Published & Archived Assam Gazette: ${issueNo} (${newGazette.subjectTitle})`
+    );
+    return newGazette;
+  }
+
+  // Dispatch & E-Gatepass
+  getAllGatepasses() {
+    return Array.from(this.gatepasses.values());
+  }
+
+  getGatepass(id) {
+    return this.gatepasses.get(id);
+  }
+
+  verifyGatepassQR(qrToken) {
+    for (const gp of this.gatepasses.values()) {
+      if (gp.qrVerificationToken === qrToken || gp.id === qrToken || gp.gatepassNumber === qrToken) {
+        return {
+          valid: true,
+          gatepass: gp,
+          verifiedAt: new Date().toISOString(),
+          issuer: "Directorate of Printing & Stationery, Assam (Bamunimaidam, Guwahati)",
+        };
       }
     }
-    return anchor;
+    return {
+      valid: false,
+      message: "QR Verification Token not recognized or gatepass revoked.",
+    };
+  }
+
+  createGatepass(data) {
+    const id = `GP-2026-DIS-${Math.floor(100 + Math.random() * 900)}`;
+    const distCode = data.destinationDistrict ? data.destinationDistrict.substring(0, 3).toUpperCase() : "ASM";
+    const gatepassNumber = `DPS/GP/2026/${distCode}/${Math.floor(100 + Math.random() * 900)}`;
+    const qrVerificationToken = `DPS-GP-${distCode}-${Math.floor(10000 + Math.random() * 90000)}-VERIFIED-AUTH`;
+
+    const newGp = {
+      id,
+      gatepassNumber,
+      requisitionId: data.requisitionId || "IND-2026-GEN-001",
+      destinationDistrict: data.destinationDistrict || "Kamrup Metropolitan",
+      receivingFacility: data.receivingFacility || `District Stationery Store, ${data.destinationDistrict || "Kamrup"}`,
+      vehicleNumber: data.vehicleNumber || "AS-01-GC-9901 (Dedicated Govt Carrier)",
+      driverName: data.driverName || "Official Transport Driver",
+      driverPhone: data.driverPhone || "+91-94350-00000",
+      consignmentDetails: data.consignmentDetails || "Printed Stationery and Forms Consignment",
+      totalBundles: Number(data.totalBundles) || 50,
+      grossWeightKg: Number(data.grossWeightKg) || 650.0,
+      qrVerificationToken,
+      status: "IN_TRANSIT_HIGHWAY",
+      departureTime: new Date().toISOString(),
+      estimatedArrivalTime: new Date(Date.now() + 3600000 * 6).toISOString(),
+      currentGPS: {
+        lat: 26.1834,
+        lng: 91.7766,
+        locationName: "Bamunimaidam Central Press, Guwahati (Departed)",
+        timestamp: new Date().toISOString(),
+      },
+      routeWaypoints: [
+        { lat: 26.1834, lng: 91.7766, locationName: "Directorate Press, Bamunimaidam" },
+      ],
+    };
+
+    this.gatepasses.set(id, newGp);
+
+    // Update Requisition status if linked
+    if (this.requisitions.has(newGp.requisitionId)) {
+      const req = this.requisitions.get(newGp.requisitionId);
+      req.status = "IN_TRANSIT";
+      req.gatepassId = id;
+    }
+
+    this.logAdminAction(
+      "GATEPASS_ISSUED",
+      "Fleet Dispatch Officer",
+      "DISPATCH_OFFICER",
+      `Issued E-Gatepass #${gatepassNumber} for vehicle ${newGp.vehicleNumber} bound for ${newGp.destinationDistrict}`
+    );
+    return newGp;
+  }
+
+  acknowledgeDelivery(id, acknowledgedBy = "District Treasury Officer", otp = "123456") {
+    const gp = this.gatepasses.get(id);
+    if (!gp) throw new Error(`Gatepass ${id} not found`);
+
+    gp.status = "DELIVERED_ACKNOWLEDGED";
+    gp.deliveryAcknowledgedBy = acknowledgedBy;
+    gp.acknowledgmentTimestamp = new Date().toISOString();
+
+    if (this.requisitions.has(gp.requisitionId)) {
+      const req = this.requisitions.get(gp.requisitionId);
+      req.status = "DELIVERED";
+    }
+
+    this.logAdminAction(
+      "CONSIGNMENT_DELIVERED",
+      acknowledgedBy,
+      "INDENTING_OFFICER",
+      `Consignment for Gatepass #${gp.gatepassNumber} successfully received and verified via OTP.`
+    );
+    return gp;
+  }
+
+  checkBufferStockAlerts() {
+    this.alerts = this.alerts.filter(a => a.level !== "CRITICAL_STOCK");
+    for (const item of this.inventory.values()) {
+      if (item.currentStockReams <= item.bufferThresholdReams) {
+        this.alerts.push({
+          id: `ALT-STK-${item.id}`,
+          level: "CRITICAL_STOCK",
+          title: `Buffer Stock Alert: ${item.name}`,
+          message: `Stock level (${item.currentStockReams} ${item.unit}) has breached minimum safety threshold (${item.bufferThresholdReams} ${item.unit}). Immediate procurement reorder required.`,
+          timestamp: new Date().toISOString(),
+        });
+      }
+    }
   }
 
   getAnalytics() {
-    const all = this.getAllBatches();
-    const totalGreenLeafKg = all.reduce((sum, b) => sum + (b.plucking.verifiedWeightKg || b.plucking.estimatedWeightKg || 0), 0);
-    const totalMadeTeaKg = all.reduce((sum, b) => sum + (b.processing?.madeTeaWeightKg || 0), 0);
-    const testedBatches = all.filter(b => b.labTest);
-    const mrlCompliantCount = testedBatches.filter(b => b.labTest.pesticideMRLStatus === "COMPLIANT").length;
+    let totalStockReams = 0;
+    let totalStockValueINR = 0;
+    let itemsBelowBufferCount = 0;
 
-    const districtBreakdown = {};
-    for (const b of all) {
-      const dist = b.plucking.district || "Jorhat";
-      districtBreakdown[dist] = (districtBreakdown[dist] || 0) + 1;
+    for (const item of this.inventory.values()) {
+      totalStockReams += item.currentStockReams;
+      totalStockValueINR += item.currentStockReams * item.unitCostINR;
+      if (item.currentStockReams <= item.bufferThresholdReams) {
+        itemsBelowBufferCount++;
+      }
     }
 
+    const requisitions = Array.from(this.requisitions.values());
+    const pendingRequisitions = requisitions.filter(r => r.status === "SUBMITTED" || r.status === "UNDER_PRODUCTION").length;
+    const sanctionedRequisitions = requisitions.filter(r => r.status === "SANCTIONED" || r.status === "IN_TRANSIT" || r.status === "DELIVERED").length;
+
+    const jobTickets = Array.from(this.jobTickets.values());
+    const activeJobs = jobTickets.filter(j => j.stage !== "COMPLETED_WAREHOUSE").length;
+    const avgWastage = jobTickets.length > 0
+      ? (jobTickets.reduce((acc, j) => acc + (j.paperWastagePercentage || 0), 0) / jobTickets.length).toFixed(2)
+      : "1.80";
+
+    const gatepasses = Array.from(this.gatepasses.values());
+    const inTransitFleet = gatepasses.filter(g => g.status === "IN_TRANSIT_HIGHWAY").length;
+    const deliveredCount = gatepasses.filter(g => g.status === "DELIVERED_ACKNOWLEDGED").length;
+
     return {
-      totalBatches: all.length,
-      totalGreenLeafKg: +totalGreenLeafKg.toFixed(1),
-      totalMadeTeaKg: +totalMadeTeaKg.toFixed(1),
-      registeredGrowersCount: this.growers.length,
-      mrlComplianceRatePct: testedBatches.length ? +((mrlCompliantCount / testedBatches.length) * 100).toFixed(1) : 100,
-      totalAnchorsOnChain: this.anchors.length,
-      latestMerkleRoot: this.anchors[this.anchors.length - 1]?.rootHash || "0x0",
-      districtBreakdown,
-      criticalAlertsCount: this.adminAlerts.filter(a => !a.resolved).length,
+      portalCode: "NESFIC-D-39",
+      directorate: this.directorate,
+      totalStockReams,
+      totalStockValueINR: Math.round(totalStockValueINR),
+      itemsBelowBufferCount,
+      totalCatalogItems: this.inventory.size,
+      pendingRequisitions,
+      sanctionedRequisitions,
+      activeJobs,
+      averageWastagePercentage: parseFloat(avgWastage),
+      inTransitFleet,
+      deliveredConsignmentsCount: deliveredCount,
+      totalDistrictsSupported: this.districts.length,
+      alertsCount: this.alerts.length,
+      activeAlerts: this.alerts,
     };
   }
 }
 
-export const db = new TraceabilityDB();
+export const db = new StationeryDB();

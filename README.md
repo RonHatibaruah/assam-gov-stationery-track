@@ -1,91 +1,159 @@
-# Assam Tea Digital Traceability Platform
-### Problem Code: NESFIC-I-08 (NESFIC 2026)
-**Organized by:** Department of Innovation, Incubation and Startups (DIIS), Government of Assam  
-**Problem Owner:** Tea Research Association (TRA) – Tocklai (New Technology Committee)  
-**Objective:** End-to-End Digital Traceability of Tea Across the Assam Tea Value Chain
+# Assam Government Press & Stationery Digital Tracking
+### Problem Code: NESFIC-D-39 (NESFIC 2026)
+**Official Challenge Track:** Government Track / Dashboards & Digital Platforms (Governance & Administration)  
+**Organized by:** Department of Innovation, Incubation and Startups (DIIS) & Assam Innovation & Startup Foundation (AISF), Government of Assam  
+**Problem Owner:** Directorate of Printing & Stationery, Information, Public Relations, Printing & Stationery Department, Government of Assam (Bamunimaidam, Guwahati - 781021)  
+**Problem Statement Reference:** [https://startup.assam.gov.in/nesfic26/problem-statements/nesfic-d-39](https://startup.assam.gov.in/nesfic26/problem-statements/nesfic-d-39)  
+**Objective:** End-to-end digital inventory, procurement inflow, press production floor management, inter-district e-indents, and GPS movement tracking of official government stationery, forms, and *The Assam Gazette (অসম ৰাজপত্ৰ)* across all 35 Assam districts.
 
 ---
 
-## 🍵 Key Features Built
+## 🏛️ Suggested GitHub Repository Names
 
-1. **Assam Geographical Indication (GI) & Provenance Shield:**
-   - Cryptographic verification of authentic Assam GI Tag (`#GI-IN-ASM-TEA-XXXX`).
-   - Anti-counterfeit serialized QR codes with Merkle tree proof verification.
-2. **Small Tea Grower (STG) / Field App ("চাহ-সেৱা Chah-Sewa"):**
-   - Multilingual interface (Assamese / English).
-   - Geo-fenced harvest logging with verified plantation boundary polygons (Jorhat, Dibrugarh, Tinsukia, Golaghat).
-   - Real-time GPS capture with instantaneous cross-referencing against Cadastral Land Parcel records (Dag & Patta numbers).
-   - Bluetooth / IoT digital weighbridge integration eliminating manual leaf manipulation and moisture deductions.
-3. **High-Precision Cadastral GIS Land Parcel Engine (Dharitree / ILRMS Standards):**
-   - Dual-mode GIS viewer: Toggle between macro Assam valley tea district distribution and micro-cadastral land survey polygons.
-   - Interactive Dag parcel inspection (`Dag #142/518`, `Dag #143/519`, `Dag #144/520`, `Dag #145/521`, `Dag #146/522`, `Dag #147/523`).
-   - Land tenure mapping: Periodic Patta (ম্যাদী পট্টা), Khiraj Myadi, Research Grants, and Nursery blocks.
-   - EU Deforestation Regulation (EUDR) anti-deforestation audit trail and eco-sensitive non-plucking riparian buffer enforcement.
-   - Live sensor radar ping overlay displaying plucker positions inside registered Dag boundaries.
-4. **Estate & Bought Leaf Factory (BLF) Management:**
-   - Real-time IoT sensor telemetry (Withering loss %, Fermentation humidity %, VFBD drying temperatures).
-   - Batch consolidation & processing into CTC (BOP, BP, OF) and Orthodox (TGFOP1) grades.
-4. **TRA Tocklai Quality & Chemical Residue Lab Verification:**
-   - NABL accredited lab certificate generation & IPFS cryptographic hash pinning.
-   - Plant Protection Code (PPC) pesticide Maximum Residue Limit (MRL) validation (Emamectin Benzoate, Quinalphos, Hexaconazole, Thiamethoxam).
-5. **Guwahati Tea Auction Centre (GTAC) Handover:**
-   - Custody transfer tracking for lots sold through electronic auction.
-6. **Smart Contracts (`packages/contracts`):**
-   - `TeaRegistry.sol`: Decentralized registry of STGs, BLFs, certified laboratories, and TRA administrators.
-   - `TeaBatchProvenance.sol`: Immutable batch lifecycle tracking and periodic state-root Merkle anchoring on Layer 2 blockchain.
+| Repository Name | Style & Positioning | Recommended Usage |
+| :--- | :--- | :--- |
+| **`assam-gov-stationery-track`** | **Official & Standard (Recommended)** | Ideal for government department presentations, public sector audits, and open-source governance. |
+| **`nesfic-d-39-mudran-sewa`** | **Hackathon / Regional Identity** | Combines challenge code `NESFIC-D-39` with Assamese *"Mudran Sewa"* (মুদ্ৰণ সেৱা — Printing Service). |
+| **`assam-press-inventory-tracker`** | **Direct & Technical** | Clear, descriptive, and highly searchable across engineering teams. |
+| **`mudran-dristi-assam`** | **State Digital Mission Brand** | Styled like Assam state digital initiatives (e.g., *Dharitree*, *Mission Basundhara*). |
+| **`gov-press-logistics-nesfic`** | **Supply Chain & Transit Focused** | Emphasizes the logistics and fleet transit across Assam's highway network. |
 
 ---
 
-## 🚀 Quickstart & Running the Application
+## 🖨️ Key Features Built for NESFIC-D-39
 
-### 1. Run Unit Tests (In-Process)
+1. **Central Directorate Paper Warehouse & Consumables Ledger:**
+   - Tracks flat paper reams and high-speed rotary web offset reels across standard GSM grades (Maplitho 60–80 GSM, Executive Sunlit Bond 80 GSM, Azurelaid Ledger 90 GSM, Gloss Art Board 300 GSM, Kraft paper 120 GSM).
+   - Inward Goods Received Notes (GRN) capturing mill supplier, lot numbers, mill test certificate hashes, warehouse bays, and unit costs.
+   - Automated minimum safety buffer thresholds with instant reorder alerts.
+
+2. **Inter-Departmental e-Requisitions (e-Indents) Across 35 Districts:**
+   - Digital requisition portal for District Commissioner (DC) offices, Assam Secretariat (Dispur), Gauhati High Court, Legislative Assembly, and Commissionerates.
+   - Priority classification: `ROUTINE`, `URGENT_ASSEMBLY`, `CRITICAL_ELECTION`, and `JUDICIAL_EMERGENCY`.
+   - Multi-tier sanction approval workflow with quota validation, sanction order numbers, and automated store issue slips.
+
+3. **Press Production Floor & Trimming Loss Engine:**
+   - Production job ticketing for Web Offset presses (Harris Reel-fed), Sheet-fed presses (Heidelberg Speedmaster), and automatic folding/stitching lines.
+   - Real-time stage machine progression: `PRE_PRESS_PLATEMAKING` $\rightarrow$ `PROOF_APPROVED` $\rightarrow$ `PRESS_PRINTING` $\rightarrow$ `TRIMMING_CUTTING` $\rightarrow$ `BINDING_FINISHING` $\rightarrow$ `COMPLETED_WAREHOUSE`.
+   - Paper wastage telemetry: Live monitoring of trimming loss % (alerts if wastage breaches the 3.0% threshold).
+
+4. **The Assam Gazette (অসম ৰাজপত্ৰ) High-Security Vault:**
+   - Serialized tracking of Ordinary and Extraordinary Gazette notifications.
+   - Cryptographic SHA-256 digital checksum publication stamping to prevent unauthorized alterations or gazette forgeries.
+
+5. **Tamper-Evident E-Gatepass & Fleet GPS Transit Tracking:**
+   - Generates verifiable QR-coded E-Gatepasses linking requisition ID, transport carrier, driver details, and consignment manifest.
+   - Interactive SVG radar transit map simulating movement across Assam's highway corridors (Guwahati Central Press $\rightarrow$ Nagaon $\rightarrow$ Kaziranga $\rightarrow$ Jorhat / Dibrugarh / Silchar).
+   - Delivery acknowledgment with receiving Treasury Officer OTP / digital verification.
+
+6. **Admin Command Center & Immutable Audit Ledger:**
+   - Dedicated administration tab for store managers and press superintendents.
+   - Immediate stock adjustment with required audit justification.
+   - Form GFR-19 (CAG Stock Verification Register) JSON export.
+   - Chained SHA-256 tamper-proof audit trail of all transactions.
+
+---
+
+## 🌐 Favicon, SEO & GEO Friendly Links & Metadata
+
+### 1. Favicon & Web Manifest
+- **Favicon (`apps/web/public/favicon.svg`)**:
+  - Official vector emblem combining Government of Assam deep emerald green (`#004d40`), golden press cylinder rollers (`#f59e0b`), quill pen, and layered paper reams.
+- **Web App Manifest (`apps/web/public/site.webmanifest`)**:
+  - Name: `MudranSewa - Assam Government Press & Stationery Tracker`.
+
+### 2. Search Engine & Social Graph Meta Tags
+- **Title**: `NESFIC-D-39 | Digital Inventory & Movement Tracking | Directorate of Printing & Stationery, Assam`
+- **Canonical URL**: `https://stationery.assam.gov.in/`
+- **Open Graph**: `og:title`, `og:description`, `og:image`, `og:locale` (`en_IN`, `as_IN`), `og:site_name`.
+- **Twitter Card**: `summary_large_image`.
+
+### 3. GEO-Tagging (Hyper-Local Location Metadata)
+- **`geo.region`**: `IN-AS` (India - Assam)
+- **`geo.placename`**: `Bamunimaidam, Guwahati, Assam, India`
+- **`geo.position`**: `26.1834;91.7766`
+- **`ICBM`**: `26.1834, 91.7766`
+
+### 4. Schema.org Structured Data (JSON-LD)
+Includes embedded schemas for:
+- `GovernmentOrganization`: Directorate of Printing & Stationery, Bamunimaidam, Guwahati.
+- `GovernmentService`: Digital Inventory & Movement Tracking System (NESFIC-D-39).
+- GeoCoordinates matching the central government printing facility in Bamunimaidam.
+
+### 5. SEO & GEO Friendly Semantic URLs
+Client-side pushState routes support direct semantic linking:
+- `/inventory/stock-register` — Paper Reams & Consumables Warehouse
+- `/requisition/e-indent` — Inter-Departmental Requisition Portal
+- `/press/job-tickets` — Press Production Floor & Job Allocation
+- `/dispatch/transit-tracker` — Consignment Dispatch & Highway Fleet Map
+- `/admin/command-center` — Directorate Administration & Audit Vault
+
+---
+
+## 📡 REST API Catalog
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/health` | Service health status and NESFIC-D-39 identity |
+| `GET` | `/api/districts` | List of 35 supported Assam districts |
+| `GET` | `/api/inventory` | List all paper reels, reams, inks, and plates |
+| `GET` | `/api/inventory/:id` | Detailed specifications of an inventory item |
+| `POST` | `/api/inventory/inward` | Record Inward Delivery (GRN) |
+| `POST` | `/api/inventory/:id/adjust` | Admin stock adjustment with audit reason |
+| `GET` | `/api/requisitions` | List e-Indents with status/district filters |
+| `POST` | `/api/requisitions` | Submit a new inter-departmental e-Indent |
+| `POST` | `/api/requisitions/:id/approve` | Sanction an indent and issue sanction order |
+| `GET` | `/api/press/jobs` | List active printing press job tickets |
+| `POST` | `/api/press/jobs` | Create a new job ticket and allocate paper stock |
+| `POST` | `/api/press/jobs/:id/stage` | Advance job stage and record trimming wastage % |
+| `GET` | `/api/gazette/issues` | List verified The Assam Gazette notifications |
+| `POST` | `/api/gazette/issues` | Publish and digitally stamp new Gazette issue |
+| `GET` | `/api/dispatch/gatepasses` | List active dispatch gatepasses and transit statuses |
+| `POST` | `/api/dispatch/create` | Generate a new QR E-Gatepass for vehicle dispatch |
+| `POST` | `/api/dispatch/:id/deliver` | Acknowledge destination delivery via OTP verification |
+| `GET` | `/api/verify/gatepass/:token` | Public / inspector verification of QR Gatepass |
+| `GET` | `/api/analytics` | Executive dashboard metrics and buffer stock alerts |
+| `GET` | `/api/admin/audit-logs` | Retrieve SHA-256 tamper-proof governance audit logs |
+
+---
+
+## 🚀 Quickstart & Verification
+
+### 1. Run Automated Unit Tests
 ```bash
-npm test -w apps/api
+npm test
 ```
-All unit tests verify batch creation, weighbridge receipts, factory transitions, lab MRL validation, and Merkle tree root hashing.
+*Validates inventory seeding, GRN inwards, stock adjustment floors, e-indent lifecycles, press machine stages, QR gatepass resolution, and analytics.*
 
 ### 2. Start the Backend API (Port 4000)
 ```bash
 npm run dev:api
-# API runs on http://localhost:4000
+# API runs at http://localhost:4000
 ```
 
 ### 3. Start the Web Portal (Port 3000)
 ```bash
 npm run dev:web
-# Open http://localhost:3000 in your browser
+# Web Portal runs at http://localhost:3000
 ```
-
----
-
-## 📡 REST API Endpoints
-
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/api/health` | Healthcheck and service status |
-| `GET` | `/api/batches` | List all tracked tea batches across the valley |
-| `GET` | `/api/batches/:id` | Detailed batch lifecycle information |
-| `POST` | `/api/batches/harvest` | Record STG plucking with GPS coordinates |
-| `POST` | `/api/batches/:id/weighbridge` | Sync digital weighbridge scale reading |
-| `POST` | `/api/batches/:id/process` | Record factory manufacturing parameters & grading |
-| `POST` | `/api/batches/:id/lab-test` | Record NABL pesticide MRL compliance report |
-| `POST` | `/api/batches/:id/auction` | GTAC auction lot allocation & custody transfer |
-| `GET` | `/api/verify/:qrToken` | Public consumer Leaf-to-Cup verification |
-| `POST` | `/api/blockchain/anchor` | Compute Merkle tree root and anchor to blockchain |
-| `GET` | `/api/analytics` | TRA Tocklai valley-wide analytics and compliance rate |
-| `GET` | `/api/iot/telemetry` | Live simulated chamber telemetry |
 
 ---
 
 ## 🏛️ Project Directory Structure
 
 ```
-Blockchain-nesfic-i-08/
+Govt-Stationary-nesfic-d-39/
 ├── packages/
-│   ├── contracts/          # Solidity Smart Contracts (TeaRegistry & TeaBatchProvenance)
-│   └── shared/             # Shared data models, constants, and Merkle Tree engine
+│   ├── contracts/          # Smart contract audit anchors & state roots
+│   └── shared/             # Shared TypeScript & JavaScript types, constants, and Merkle engine
 ├── apps/
-│   ├── api/                # HTTP REST API & Traceability engine
-│   └── web/                # Interactive Web App & Consumer QR Explorer
-└── README.md
+│   ├── api/                # HTTP REST API server & StationeryDB engine
+│   │   ├── src/            # db.js and server.js
+│   │   └── test/           # api.test.js and http.test.js
+│   └── web/                # Government Web Portal
+│       ├── public/         # index.html, styles.css, app.js, favicon.svg, site.webmanifest
+│       ├── src/            # server.js (SPA fallback server)
+│       └── functions/      # Cloudflare Pages edge functions ([[route]].js)
+├── README.md               # Official project documentation
+└── package.json            # Root workspaces configuration
 ```
