@@ -881,16 +881,16 @@ def build_proposal_pdf():
     story.append(Paragraph("<b>Figure 12.1:</b> <i>Tri-District Field Pilot Validation Blueprint, Geographic Staging, and Measurable Go/No-Go Acceptance Gates</i>", styles['FigCaption']))
     story.append(Spacer(1, 2))
 
-    story.append(Paragraph("Indicative Resource & Budget Allocation (Rs. 20 Lakh - Rs. 40 Lakh Tier)", styles['SubSectionHead']))
+    story.append(Paragraph("Indicative Resource & Budget Allocation (Rs. 40 Lakh NESFIC Grant)", styles['SubSectionHead']))
     budget_data = [
         [Paragraph("BUDGET HEAD", styles['TableHead']), Paragraph("ESTIMATED COST", styles['TableHead']), Paragraph("ALLOCATION FOCUS", styles['TableHead'])],
-        [Paragraph("Core Platform Engineering & Microservices", styles['TableCellBold']), Paragraph("Rs. 13,50,000", styles['TableCell']), Paragraph("Full-stack development, scrap calculation engine, E-Gatepass QR portal", styles['TableCell'])],
-        [Paragraph("Cloud Edge Compute & SDC Staging", styles['TableCellBold']), Paragraph("Rs. 5,00,000", styles['TableCell']), Paragraph("Cloudflare Edge staging, database clustering, SDC containerization", styles['TableCell'])],
-        [Paragraph("Pilot Handheld Scanners & Hardware Pairing", styles['TableCellBold']), Paragraph("Rs. 6,00,000", styles['TableCell']), Paragraph("Rugged mobile scanners for warehouse storekeepers and transit drivers", styles['TableCell'])],
-        [Paragraph("Press Domain Advisory & Rule Calibration", styles['TableCellBold']), Paragraph("Rs. 4,00,000", styles['TableCell']), Paragraph("Directorate workflow calibration, CAG GFR-19 reporting compliance", styles['TableCell'])],
+        [Paragraph("Software Development Team (Core Platform & Microservices)", styles['TableCellBold']), Paragraph("Rs. 20,00,000", styles['TableCell']), Paragraph("Full-stack architecture, scrap calculation engine, E-Gatepass QR portal", styles['TableCell'])],
+        [Paragraph("Cloud Edge Compute & Assam SDC Staging", styles['TableCellBold']), Paragraph("Rs. 4,50,000", styles['TableCell']), Paragraph("Cloudflare Edge staging, database clustering, SDC containerization", styles['TableCell'])],
+        [Paragraph("Pilot Handheld Scanners & Hardware Deployment", styles['TableCellBold']), Paragraph("Rs. 5,00,000", styles['TableCell']), Paragraph("Rugged mobile scanners for warehouse storekeepers and transit tracking", styles['TableCell'])],
+        [Paragraph("Press Domain Advisory & Workflow Calibration", styles['TableCellBold']), Paragraph("Rs. 3,50,000", styles['TableCell']), Paragraph("Directorate workflow calibration, CAG GFR-19 reporting compliance", styles['TableCell'])],
         [Paragraph("User Training, Documentation & Handover", styles['TableCellBold']), Paragraph("Rs. 4,00,000", styles['TableCell']), Paragraph("Workshops for 35 District Nodal Officers, bilingual operational manuals", styles['TableCell'])],
-        [Paragraph("Third-Party CERT-In Security Audit & Contingency", styles['TableCellBold']), Paragraph("Rs. 4,00,000", styles['TableCell']), Paragraph("Empaneled VAPT security audit, field travel to Jorhat Branch Press", styles['TableCell'])],
-        [Paragraph("<b>TOTAL ESTIMATED BUDGET</b>", styles['TableCellBold']), Paragraph("<b>Rs. 36,50,000</b>", styles['TableCellBold']), Paragraph("<b>Within Rs. 40 Lakh NESFIC Grant Tier</b>", styles['TableCellBold'])],
+        [Paragraph("Third-Party CERT-In Security Audit & Contingency", styles['TableCellBold']), Paragraph("Rs. 3,00,000", styles['TableCell']), Paragraph("Empaneled VAPT security audit, field travel to Jorhat Branch Press", styles['TableCell'])],
+        [Paragraph("<b>TOTAL ESTIMATED BUDGET</b>", styles['TableCellBold']), Paragraph("<b>Rs. 40,00,000</b>", styles['TableCellBold']), Paragraph("<b>Full Allocation of Rs. 40 Lakh NESFIC Grant Tier</b>", styles['TableCellBold'])],
     ]
     budget_table = Table(budget_data, colWidths=[165, 95, 227])
     budget_table.setStyle(TableStyle([
