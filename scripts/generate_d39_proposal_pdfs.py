@@ -261,6 +261,7 @@ def get_styles():
             leading=10,
             textColor=C_BODY
         ),
+        'FigCaption': ParagraphStyle('FigCaption', parent=base['Normal'], fontName='Helvetica-Oblique', fontSize=6.8, leading=8.5, textColor=C_MUTED, alignment=1, spaceBefore=2, spaceAfter=3),
         'FormulaText': ParagraphStyle(
             'FormulaText',
             parent=base['Normal'],
@@ -321,12 +322,17 @@ def build_proposal_pdf():
         ('RIGHTPADDING', (0,0), (-1,-1), 6),
     ]))
     story.append(meta_table)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 3))
 
     # Field 1
     story.append(Paragraph("Field 1: Problem understanding & user workflow", styles['FieldHeading']))
     story.append(Paragraph("Submission Word Budget: Word Count: ~445 words / Max: 500 words", styles['WordBudget']))
     story.append(HRFlowable(width="100%", thickness=1, color=C_RULE, spaceBefore=1, spaceAfter=4))
+    img_d39_prop = RLImage(os.path.join(ASSETS_DIR, "d39_prop_fig1_problem_map.png"), width=350, height=198)
+    img_d39_prop.hAlign = 'CENTER'
+    story.append(img_d39_prop)
+    story.append(Paragraph("<b>Figure 1.1:</b> <i>Directorate Supply Chain Bottlenecks, Scrap Leakage Points & Inter-District Information Asymmetry</i>", styles['FigCaption']))
+    story.append(Spacer(1, 2))
 
     story.append(Paragraph("Problem Context & Scale", styles['SubSectionHead']))
     story.append(Paragraph("The Directorate of Printing & Stationery (located at Bamunimaidam, Guwahati), operating under the Department of Information, Public Relations, Printing & Stationery, Government of Assam, serves as the central manufacturing and supply backbone for the entire state machinery. It handles hundreds of metric tonnes of raw paper reels and reams across diverse specifications (Maplitho 60–80 GSM, Executive Sunlit Bond 80 GSM, Azurelaid Ledger 90 GSM, Gloss Art Board 300 GSM, Kraft paper 120 GSM), alongside printing inks and CTP aluminium offset plates. The Directorate produces statutory publications including The Assam Gazette (Asom Rajpatra - Ordinary and Extraordinary editions), Legislative Assembly Bills and Budget Estimates, Land Revenue Jamabandi/Patta registers, Treasury Challans (Schedule LIII-107), election stationery, and standard administrative forms distributed across all 35 Assam districts.", styles['Body']))
@@ -355,6 +361,11 @@ def build_proposal_pdf():
     story.append(Paragraph("Field 2: Proposed solution & key features", styles['FieldHeading']))
     story.append(Paragraph("Submission Word Budget: Word Count: ~458 words / Max: 500 words", styles['WordBudget']))
     story.append(HRFlowable(width="100%", thickness=1, color=C_RULE, spaceBefore=1, spaceAfter=4))
+    img_d39_fig_ = RLImage(os.path.join(ASSETS_DIR, "d39_fig_paradigm_shift.png"), width=400, height=223)
+    img_d39_fig_.hAlign = 'CENTER'
+    story.append(img_d39_fig_)
+    story.append(Paragraph("<b>Figure 2.1:</b> <i>Operational Paradigm Shift — Transitioning from Manual Registers to Automated Telemetry & Cryptographic Verification</i>", styles['FigCaption']))
+    story.append(Spacer(1, 2))
 
     story.append(Paragraph("Proposed Solution Overview", styles['SubSectionHead']))
     story.append(Paragraph("<b>Mudran-Sewa (Assam Govt Stationery Track)</b> is an automated, production-tested, end-to-end Digital Inventory, Press Production Floor, and Movement Tracking Platform engineered specifically for the Directorate of Printing & Stationery, Government of Assam. Operating across serverless edge computing architecture, it connects central warehouse stores, multi-line printing presses, and 35 district administrative hubs into a unified, transparent supply chain network.", styles['Body']))
@@ -400,6 +411,11 @@ def build_proposal_pdf():
     story.append(Paragraph("Field 3: Describe User Journey, Wireframes, Prototype & Proof of Work", styles['FieldHeading']))
     story.append(Paragraph("Submission Word Budget: Word Count: ~448 words / Max: 500 words", styles['WordBudget']))
     story.append(HRFlowable(width="100%", thickness=1, color=C_RULE, spaceBefore=1, spaceAfter=4))
+    img_d39_prop = RLImage(os.path.join(ASSETS_DIR, "d39_prop_fig3_user_journey.png"), width=410, height=233)
+    img_d39_prop.hAlign = 'CENTER'
+    story.append(img_d39_prop)
+    story.append(Paragraph("<b>Figure 3.1:</b> <i>Persona User Journeys Across District Indenting, Central Store Inward, Press Floor Telemetry, and Fleet Transit Handshake</i>", styles['FigCaption']))
+    story.append(Spacer(1, 2))
 
     story.append(Paragraph("Proposed User Journeys", styles['SubSectionHead']))
     story.append(Paragraph("1. <b>Indenting Officer Requisition Journey:</b> The Nodal Officer at Jorhat District Commissionerate logs into <i>Mudran-Sewa</i>, checks their annual stationery quota, and indents 500 reams of Azurelaid Ledger paper (Schedule LIII-107) marked 'Urgent Revenue Administration'. The system automatically verifies quota limits and routes the digital request to the Directorate Director at Bamunimaidam. Upon one-click approval, a digital Sanction Order is generated and queued at Central Paper Store Shed #2.", styles['Body']))
@@ -426,6 +442,11 @@ def build_proposal_pdf():
     story.append(Paragraph("Field 4: Technology & solution architecture", styles['FieldHeading']))
     story.append(Paragraph("Submission Word Budget: Word Count: ~452 words / Max: 500 words", styles['WordBudget']))
     story.append(HRFlowable(width="100%", thickness=1, color=C_RULE, spaceBefore=1, spaceAfter=4))
+    img_d39_fig_ = RLImage(os.path.join(ASSETS_DIR, "d39_fig_architecture.png"), width=410, height=233)
+    img_d39_fig_.hAlign = 'CENTER'
+    story.append(img_d39_fig_)
+    story.append(Paragraph("<b>Figure 4.1:</b> <i>Four-Tier Cloud-Edge Microservices Architecture & Data Flow Topology for Mudran-Sewa</i>", styles['FigCaption']))
+    story.append(Spacer(1, 2))
 
     story.append(Paragraph("Architecture Paradigm", styles['SubSectionHead']))
     story.append(Paragraph("<b>Mudran-Sewa</b> is architected as a lightweight, cloud-native, microservices-driven digital platform designed for seamless deployment on Cloudflare Edge and the Assam State Data Centre (SDC). It operates as a read-and-verify decision-support infrastructure with complete tamper resistance and zero external proprietary lock-in.", styles['Body']))
@@ -453,6 +474,11 @@ def build_proposal_pdf():
     story.append(Paragraph("Field 5: Development methodology & intermediate steps", styles['FieldHeading']))
     story.append(Paragraph("Submission Word Budget: Word Count: ~440 words / Max: 500 words", styles['WordBudget']))
     story.append(HRFlowable(width="100%", thickness=1, color=C_RULE, spaceBefore=1, spaceAfter=4))
+    img_d39_prop = RLImage(os.path.join(ASSETS_DIR, "d39_prop_fig5_devsecops.png"), width=410, height=233)
+    img_d39_prop.hAlign = 'CENTER'
+    story.append(img_d39_prop)
+    story.append(Paragraph("<b>Figure 5.1:</b> <i>Agile-DevSecOps 4-Stage Delivery Pipeline, Security Gates, and Iterative Sprint Cadence</i>", styles['FigCaption']))
+    story.append(Spacer(1, 2))
 
     story.append(Paragraph("Development Methodology", styles['SubSectionHead']))
     story.append(Paragraph("The project follows an <b>Agile-DevSecOps</b> methodology structured into four iterative stages over 6 months, combining rapid two-week technical sprints with continuous user validation alongside Directorate of Printing & Stationery storekeepers, press engineers, and district indenting officers.", styles['Body']))
@@ -503,6 +529,11 @@ def build_proposal_pdf():
     story.append(Paragraph("Field 6: Development timeline & milestones", styles['FieldHeading']))
     story.append(Paragraph("Submission Word Budget: Word Count: ~435 words / Max: 500 words", styles['WordBudget']))
     story.append(HRFlowable(width="100%", thickness=1, color=C_RULE, spaceBefore=1, spaceAfter=4))
+    img_d39_prop = RLImage(os.path.join(ASSETS_DIR, "d39_prop_fig6_gantt_roadmap.png"), width=420, height=209)
+    img_d39_prop.hAlign = 'CENTER'
+    story.append(img_d39_prop)
+    story.append(Paragraph("<b>Figure 6.1:</b> <i>Six-Month Development & Validation Gantt Roadmap Across Inception, Architecture, Press Integration, and Field Pilot</i>", styles['FigCaption']))
+    story.append(Spacer(1, 2))
 
     story.append(Paragraph("6-Month Phased Roadmap", styles['SubSectionHead']))
     road_data = [
@@ -570,6 +601,11 @@ def build_proposal_pdf():
     story.append(Paragraph("Field 7: Data & information requirements", styles['FieldHeading']))
     story.append(Paragraph("Submission Word Budget: Word Count: ~428 words / Max: 500 words", styles['WordBudget']))
     story.append(HRFlowable(width="100%", thickness=1, color=C_RULE, spaceBefore=1, spaceAfter=4))
+    img_d39_prop = RLImage(os.path.join(ASSETS_DIR, "d39_prop_fig7_data_pipeline.png"), width=410, height=233)
+    img_d39_prop.hAlign = 'CENTER'
+    story.append(img_d39_prop)
+    story.append(Paragraph("<b>Figure 7.1:</b> <i>Multi-Source Data Ingestion, Basis Weight Normalization Math, and Audit Synchronization Pipeline</i>", styles['FigCaption']))
+    story.append(Spacer(1, 2))
 
     story.append(Paragraph("Data Requirements & Ingestion Specifications", styles['SubSectionHead']))
     story.append(Paragraph("<b>Mudran-Sewa</b> operates purely on structured administrative, inventory, and logistics datasets already maintained by the Directorate and indenting government departments:", styles['Body']))
@@ -628,6 +664,11 @@ def build_proposal_pdf():
     story.append(Paragraph("Field 8: Team, manpower & expertise", styles['FieldHeading']))
     story.append(Paragraph("Submission Word Budget: Word Count: ~425 words / Max: 500 words", styles['WordBudget']))
     story.append(HRFlowable(width="100%", thickness=1, color=C_RULE, spaceBefore=1, spaceAfter=4))
+    img_d39_prop = RLImage(os.path.join(ASSETS_DIR, "d39_prop_fig8_team_structure.png"), width=410, height=233)
+    img_d39_prop.hAlign = 'CENTER'
+    story.append(img_d39_prop)
+    story.append(Paragraph("<b>Figure 8.1:</b> <i>Core Engineering & Domain Advisory Team Hierarchy, Governance Matrix, and Resource Allocation</i>", styles['FigCaption']))
+    story.append(Spacer(1, 2))
 
     story.append(Paragraph("Team Leadership & Composition", styles['SubSectionHead']))
     story.append(Paragraph("Led by <b>Ron Hatibaruah</b>, the multidisciplinary engineering team brings deep expertise in full-stack cloud architecture, enterprise logistics, security, and government digital platforms:", styles['Body']))
@@ -681,6 +722,11 @@ def build_proposal_pdf():
     story.append(Paragraph("Field 9: Testing, validation & evidence", styles['FieldHeading']))
     story.append(Paragraph("Submission Word Budget: Word Count: ~442 words / Max: 500 words", styles['WordBudget']))
     story.append(HRFlowable(width="100%", thickness=1, color=C_RULE, spaceBefore=1, spaceAfter=4))
+    img_d39_prop = RLImage(os.path.join(ASSETS_DIR, "d39_prop_fig9_testing_pyramid.png"), width=410, height=233)
+    img_d39_prop.hAlign = 'CENTER'
+    story.append(img_d39_prop)
+    story.append(Paragraph("<b>Figure 9.1:</b> <i>Four-Tier Testing Pyramid, Automated CI/CD Gates, and Quantitative Performance Benchmark Verification</i>", styles['FigCaption']))
+    story.append(Spacer(1, 2))
 
     story.append(Paragraph("Development Testing Framework", styles['SubSectionHead']))
     story.append(Paragraph("Testing follows a rigorous multi-tier verification strategy covering automated algorithmic validation, hardware simulation, cryptographic consistency checks, and controlled field deployments:", styles['Body']))
@@ -731,6 +777,11 @@ def build_proposal_pdf():
     story.append(Paragraph("Field 10: Security, privacy, safety & compliance", styles['FieldHeading']))
     story.append(Paragraph("Submission Word Budget: Word Count: ~435 words / Max: 500 words", styles['WordBudget']))
     story.append(HRFlowable(width="100%", thickness=1, color=C_RULE, spaceBefore=1, spaceAfter=4))
+    img_d39_prop = RLImage(os.path.join(ASSETS_DIR, "d39_prop_fig10_security_pillars.png"), width=410, height=233)
+    img_d39_prop.hAlign = 'CENTER'
+    story.append(img_d39_prop)
+    story.append(Paragraph("<b>Figure 10.1:</b> <i>Defense-in-Depth Security Framework, RBAC Hierarchy, and Assam State Data Centre (ASDC) Sovereignty</i>", styles['FigCaption']))
+    story.append(Spacer(1, 2))
 
     story.append(Paragraph("Four Pillars of Security, Privacy & Governance", styles['SubSectionHead']))
     story.append(Paragraph("<b>Mudran-Sewa</b> incorporates a comprehensive governance architecture engineered to satisfy strict state enterprise requirements:", styles['Body']))
@@ -780,6 +831,11 @@ def build_proposal_pdf():
     story.append(Paragraph("Field 11: Innovation & differentiation", styles['FieldHeading']))
     story.append(Paragraph("Submission Word Budget: Word Count: ~445 words / Max: 500 words", styles['WordBudget']))
     story.append(HRFlowable(width="100%", thickness=1, color=C_RULE, spaceBefore=1, spaceAfter=4))
+    img_d39_prop = RLImage(os.path.join(ASSETS_DIR, "d39_prop_fig11_competitive_radar.png"), width=410, height=233)
+    img_d39_prop.hAlign = 'CENTER'
+    story.append(img_d39_prop)
+    story.append(Paragraph("<b>Figure 11.1:</b> <i>Multi-Dimensional Competitive Capability Radar Matrix — Mudran-Sewa vs Commercial ERP & Legacy NIC Portals</i>", styles['FigCaption']))
+    story.append(Spacer(1, 2))
 
     story.append(Paragraph("The Core Technological Innovation", styles['SubSectionHead']))
     story.append(Paragraph("While commercial Enterprise Resource Planning (ERP) packages manage generic commercial warehouses, <b>Mudran-Sewa</b> introduces specialized domain innovations tailored specifically to government printing presses and state stationery supply chains:", styles['Body']))
@@ -819,6 +875,11 @@ def build_proposal_pdf():
     story.append(Paragraph("Field 12: Resources, risks & pilot validation", styles['FieldHeading']))
     story.append(Paragraph("Submission Word Budget: Word Count: ~455 words / Max: 500 words", styles['WordBudget']))
     story.append(HRFlowable(width="100%", thickness=1, color=C_RULE, spaceBefore=1, spaceAfter=4))
+    img_d39_prop = RLImage(os.path.join(ASSETS_DIR, "d39_prop_fig12_pilot_map.png"), width=410, height=225)
+    img_d39_prop.hAlign = 'CENTER'
+    story.append(img_d39_prop)
+    story.append(Paragraph("<b>Figure 12.1:</b> <i>Tri-District Field Pilot Validation Blueprint, Geographic Staging, and Measurable Go/No-Go Acceptance Gates</i>", styles['FigCaption']))
+    story.append(Spacer(1, 2))
 
     story.append(Paragraph("Indicative Resource & Budget Allocation (Rs. 20 Lakh - Rs. 40 Lakh Tier)", styles['SubSectionHead']))
     budget_data = [
