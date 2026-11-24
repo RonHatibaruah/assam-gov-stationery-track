@@ -2,7 +2,7 @@
 NESFIC 2026 PROOF OF WORK & TECHNICAL SOLUTION EVIDENCE
 Problem Statement: NESFIC-D-39 (Digital Inventory & Movement Tracking for Government Press and Stationery)
 Directorate: Directorate of Printing & Stationery, Information, Public Relations, Printing & Stationery Department, Government of Assam (Bamunimaidam, Guwahati - 781021)
-Lead Applicant: Ron Hatibaruah (ron.hatibaruah@gmail.com)
+Lead Applicant: Anindita Sonowal • Serve and Secure Private Limited (anindita.sonowal@serveandsecure.in)
 Live Production URL: https://mudran-sewa.pages.dev
 Public GitHub Repository: https://github.com/RonHatibaruah/assam-gov-stationery-track
 ================================================================================

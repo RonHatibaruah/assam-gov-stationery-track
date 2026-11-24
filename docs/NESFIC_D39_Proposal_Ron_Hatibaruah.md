@@ -4,7 +4,7 @@
 **Challenge Track:** Government Track / Dashboards & Digital Platforms (Governance & Administration)  
 **Organized by:** Department of Innovation, Incubation and Startups (DIIS) & Assam Innovation & Startup Foundation (AISF), Government of Assam  
 **Problem Owner:** Directorate of Printing & Stationery, Information, Public Relations, Printing & Stationery Department, Government of Assam (Bamunimaidam, Guwahati - 781021)  
-**Lead Applicant:** Ron Hatibaruah (`ron.hatibaruah@gmail.com`)  
+**Lead Applicant:** Anindita Sonowal (`anindita.sonowal@serveandsecure.in`)  
 **Live Platform:** [https://mudran-sewa.pages.dev](https://mudran-sewa.pages.dev)  
 **Interactive System Guide:** [https://mudran-sewa.pages.dev/#tutorial](https://mudran-sewa.pages.dev/#tutorial)  
 **GitHub Repository:** [https://github.com/RonHatibaruah/assam-gov-stationery-track](https://github.com/RonHatibaruah/assam-gov-stationery-track)  
@@ -260,7 +260,7 @@ The foundational prototype is ALREADY FUNCTIONAL AND DEPLOYED at `https://mudran
 *Word Budget: 333 / 500 words*
 
 ### Team Roles, Manpower & Technical Expertise
-1. **Lead Innovator & Full-Stack Systems Architect (Ron Hatibaruah)**
+1. **Lead Innovator & Full-Stack Systems Architect (Anindita Sonowal)**
    - *Role & Allocation*: Lead Project Architect — 100% full-time commitment across all 6 phases.
    - *Expertise*: 8+ years experience in distributed cloud systems, edge computing (Cloudflare Workers/Pages), Node.js/TypeScript backend engineering, PostGIS geospatial mapping, and cryptographic provenance systems. Architected and successfully deployed the working NESFIC-D-39 prototype and GitHub repository.
    - *Responsibilities*: Overall system architecture, edge API construction, cryptographic SHA-256 audit engine, and state security implementation.

@@ -532,7 +532,7 @@ def gen_prop_fig8_team_structure():
     ax.add_patch(top_box)
     ax.add_patch(Rectangle((0.23, 0.81), top_w, 0.05, transform=ax.transAxes, facecolor=C_BLUE, edgecolor=None))
     ax.text(0.50, 0.835, "PROJECT LEAD & SOLUTIONS ARCHITECT", fontsize=9.2, weight="bold", color="#ffffff", ha="center")
-    ax.text(0.50, 0.775, "Ron Hatibaruah (ron.hatibaruah@gmail.com)", fontsize=10.5, weight="bold", color=C_NAVY_TITLE, ha="center")
+    ax.text(0.50, 0.775, "Anindita Sonowal (Serve and Secure Pvt Ltd)", fontsize=10.5, weight="bold", color=C_NAVY_TITLE, ha="center")
     ax.text(0.50, 0.745, "Full-Stack Distributed Systems, Cloud Architecture & Enterprise Delivery • 100% Full-Time (24 Weeks)", fontsize=7.8, color="#475569", ha="center")
     ax.text(0.50, 0.715, "Manages agile sprint execution, architecture integrity, and Directorate/AISF stakeholder alignment", fontsize=7.2, color="#0369a1", ha="center", weight="semibold")
 

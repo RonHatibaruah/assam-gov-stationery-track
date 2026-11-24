@@ -3,7 +3,7 @@ NESFIC 2026 PROPOSAL: COPY-PASTE TEXT VERSION (FIELDS 1 TO 12)
 Problem Statement: NESFIC-D-39 (Digital Inventory & Movement Tracking for Government Press and Stationery)
 Department: Directorate of Printing & Stationery, Information, Public Relations, Printing & Stationery Department, Government of Assam (Bamunimaidam, Guwahati - 781021)
 Challenge Track: Government Track / Dashboards & Digital Platforms (Governance & Administration)
-Lead Applicant: Ron Hatibaruah (ron.hatibaruah@gmail.com)
+Lead Applicant: Anindita Sonowal • Serve and Secure Private Limited (anindita.sonowal@serveandsecure.in)
 Live Platform URL: https://mudran-sewa.pages.dev
 Interactive System Guide & Tutorial: https://mudran-sewa.pages.dev/#tutorial
 GitHub Repository: https://github.com/RonHatibaruah/assam-gov-stationery-track
@@ -248,7 +248,7 @@ Dependencies & Access Assumptions:
 
 Team Roles, Manpower & Technical Expertise:
 
-1. Lead Innovator & Full-Stack Systems Architect (Ron Hatibaruah)
+1. Lead Innovator & Full-Stack Systems Architect (Anindita Sonowal)
    - Role & Allocation: Lead Project Architect — 100% full-time commitment across all 6 phases.
    - Expertise: 8+ years experience in distributed cloud systems, edge computing (Cloudflare Workers/Pages), Node.js/TypeScript backend engineering, PostGIS geospatial mapping, and cryptographic provenance systems. Architected and successfully deployed the working NESFIC-D-39 prototype and GitHub repository.
    - Responsibilities: Overall system architecture, edge API construction, cryptographic SHA-256 audit engine, and state security implementation.
@@ -401,6 +401,6 @@ SUPPORTING MATERIAL METADATA & LINKS
 • Product / Website URL: https://mudran-sewa.pages.dev
 • Demo / Interactive Tutorial URL: https://mudran-sewa.pages.dev/#tutorial
 • GitHub Repository URL: https://github.com/RonHatibaruah/assam-gov-stationery-track
-• Lead Applicant: Ron Hatibaruah (ron.hatibaruah@gmail.com)
+• Lead Applicant: Anindita Sonowal • Serve and Secure Private Limited (anindita.sonowal@serveandsecure.in)
 • Challenge Code: NESFIC-D-39 (NESFIC 2026)
 ================================================================================

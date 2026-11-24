@@ -2,7 +2,7 @@
 ## NESFIC-I-08: End-to-End Digital Traceability of Tea Across the Assam Tea Value Chain
 **Initiative:** North East Seva First Innovation Challenge (NESFIC) 2026  
 **Problem Owner:** Tea Research Association (TRA) – Tocklai (New Technology Committee)  
-**Lead Applicant & Innovator:** Ron Hatibaruah  
+**Lead Applicant & Innovator:** Anindita Sonowal  
 **Date:** November 2026  
 **Working Prototype Repositories & URLs:**  
 - **GitHub Repository:** [https://github.com/RonHatibaruah/chah-praman](https://github.com/RonHatibaruah/chah-praman)  

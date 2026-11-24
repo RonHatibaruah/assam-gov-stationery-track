@@ -6,7 +6,7 @@ Generates:
 2. docs/NESFIC_D39_Proof_of_Work_Ron_Hatibaruah.pdf (Exactly 7 Pages Solution Evidence Dossier)
 
 Directorate of Printing & Stationery, Government of Assam (Bamunimaidam, Guwahati)
-Lead Applicant: Ron Hatibaruah (ron.hatibaruah@gmail.com)
+Lead Applicant: Anindita Sonowal • Serve and Secure Private Limited
 Live Platform: https://mudran-sewa.pages.dev
 GitHub: https://github.com/RonHatibaruah/assam-gov-stationery-track
 """
@@ -64,7 +64,7 @@ class NumberedProposalCanvas(canvas.Canvas):
             self.setFont("Helvetica", 8)
             self.setFillColor(C_MUTED)
             self.drawString(54, 804, "Government of Assam • Directorate of Printing & Stationery • NESFIC-D-39")
-            self.drawRightString(541, 804, "Mudran-Sewa — Ron Hatibaruah")
+            self.drawRightString(541, 804, "Mudran-Sewa — Anindita Sonowal (Serve & Secure)")
             self.setStrokeColor(colors.HexColor("#e2e8f0"))
             self.setLineWidth(0.5)
             self.line(54, 797, 541, 797)
@@ -75,7 +75,7 @@ class NumberedProposalCanvas(canvas.Canvas):
         self.setStrokeColor(colors.HexColor("#e2e8f0"))
         self.setLineWidth(0.5)
         self.line(54, 46, 541, 46)
-        self.drawString(54, 34, "NESFIC 2026 Proposal • Problem NESFIC-D-39 • Applicant: Ron Hatibaruah")
+        self.drawString(54, 34, "NESFIC 2026 Proposal • Problem NESFIC-D-39 • Lead Applicant: Anindita Sonowal • © 2026 Serve and Secure Pvt Ltd")
         page_str = f"Page {self._pageNumber} of {page_count}"
         self.drawRightString(541, 34, page_str)
         self.restoreState()
@@ -106,7 +106,7 @@ class NumberedPoWCanvas(canvas.Canvas):
             self.setFont("Helvetica", 8)
             self.setFillColor(C_MUTED)
             self.drawString(54, 804, "Government of Assam • Directorate of Printing & Stationery • NESFIC-D-39")
-            self.drawRightString(541, 804, "Mudran-Sewa — Proof of Work Dossier")
+            self.drawRightString(541, 804, "Mudran-Sewa PoW — Anindita Sonowal (Serve & Secure)")
             self.setStrokeColor(colors.HexColor("#e2e8f0"))
             self.setLineWidth(0.5)
             self.line(54, 797, 541, 797)
@@ -117,7 +117,7 @@ class NumberedPoWCanvas(canvas.Canvas):
         self.setStrokeColor(colors.HexColor("#e2e8f0"))
         self.setLineWidth(0.5)
         self.line(54, 46, 541, 46)
-        self.drawString(54, 34, "NESFIC 2026 PoW Dossier • Problem NESFIC-D-39 • Applicant: Ron Hatibaruah")
+        self.drawString(54, 34, "NESFIC 2026 PoW Dossier • Problem NESFIC-D-39 • Lead Applicant: Anindita Sonowal • © 2026 Serve and Secure Pvt Ltd")
         page_str = f"Page {self._pageNumber} of {page_count}"
         self.drawRightString(541, 34, page_str)
         self.restoreState()
@@ -303,12 +303,12 @@ def build_proposal_pdf():
             Paragraph("<b>Challenge Owner:</b> Directorate of Printing & Stationery, Assam", styles['MetaKey'])
         ],
         [
-            Paragraph("<b>Lead Applicant:</b> Ron Hatibaruah", styles['MetaKey']),
+            Paragraph("<b>Lead Applicant:</b> Anindita Sonowal", styles['MetaKey']),
             Paragraph("<b>Headquarters:</b> Bamunimaidam, Guwahati - 781021", styles['MetaKey'])
         ],
         [
             Paragraph("<b>Live Platform:</b> https://mudran-sewa.pages.dev/", styles['MetaKey']),
-            Paragraph("<b>GitHub:</b> https://github.com/RonHatibaruah/assam-gov-stationery-track", styles['MetaKey'])
+            Paragraph("<b>Solution Innovator:</b> Serve and Secure Private Limited", styles['MetaKey'])
         ]
     ]
     meta_table = Table(meta_data, colWidths=[240, 247])
@@ -671,12 +671,12 @@ def build_proposal_pdf():
     story.append(Spacer(1, 2))
 
     story.append(Paragraph("Team Leadership & Composition", styles['SubSectionHead']))
-    story.append(Paragraph("Led by <b>Ron Hatibaruah</b>, the multidisciplinary engineering team brings deep expertise in full-stack cloud architecture, enterprise logistics, security, and government digital platforms:", styles['Body']))
+    story.append(Paragraph("Led by <b>Anindita Sonowal</b> (Serve and Secure Private Limited), the multidisciplinary engineering team brings deep expertise in full-stack cloud architecture, enterprise logistics, security, and government digital platforms:", styles['Body']))
 
     team_data = [
         [Paragraph("ROLE & DESIGNATION", styles['TableHead']), Paragraph("CORE EXPERTISE & RESPONSIBILITY", styles['TableHead'])],
         [
-            Paragraph("<b>Ron Hatibaruah</b><br/>Lead Solutions Architect & Project Lead", styles['TableCellBold']),
+            Paragraph("<b>Anindita Sonowal</b><br/>Lead Solutions Architect & Project Lead<br/><i>Serve and Secure Private Limited</i>", styles['TableCellBold']),
             Paragraph("Full-stack systems architecture, cloud infrastructure, enterprise supply chain engineering, and agile delivery. Oversees technical development, sprint planning, and government agency liaison.<br/><i>Commitment: 100% full-time across all 24 weeks.</i>", styles['TableCell'])
         ],
         [
@@ -941,8 +941,7 @@ def build_proposal_pdf():
     story.append(Paragraph("Proposed 60-Day Pilot Validation Plan & Sign-Off", styles['SubSectionHead']))
     story.append(Paragraph("The platform will be validated through a structured 60-day trial at Bamunimaidam Central Press and Jorhat Branch Press, tracking paper reams and stationery dispatches to Kamrup Metro, Nagaon, and Jorhat District Commissionerates. Key validation KPIs include: (1) 100% elimination of transit gatepass discrepancies, (2) Press trimming scrap loss contained below 2.5%, and (3) e-Indent sanction turnaround reduced to <24 hours.", styles['BodySmall']))
 
-    signoff_text = "<b>Applicant Attribution:</b> Prepared by <b>Ron Hatibaruah</b> (Lead Solutions Architect) | Contact: <code>ron.hatibaruah@gmail.com</code><br/>" \
-                   "<b>Initiative:</b> North East Seva First Innovation Challenge (NESFIC 2026) | Problem: <b>NESFIC-D-39</b> | Directorate of Printing & Stationery, Assam"
+    signoff_text = "<b>Applicant Attribution:</b> Prepared by <b>Anindita Sonowal</b> (Lead Solutions Architect) • <b>Serve and Secure Private Limited</b><br/>"                    "<b>Disclaimer:</b> Prototype demonstration for North East Seva First Innovation Challenge (NESFIC 2026) | Problem: <b>NESFIC-D-39</b> | Directorate of Printing & Stationery, Assam<br/>"                    "<b>Copyright:</b> © 2026 Serve and Secure Private Limited. All rights reserved."
     s_table = Table([[Paragraph(signoff_text, styles['BodySmall'])]], colWidths=[487])
     s_table.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,-1), C_TEAL_LIGHT),
@@ -986,12 +985,12 @@ def build_pow_pdf():
             Paragraph("<b>Department:</b> Directorate of Printing & Stationery, Assam", styles['MetaKey'])
         ],
         [
-            Paragraph("<b>Lead Applicant:</b> Ron Hatibaruah", styles['MetaKey']),
+            Paragraph("<b>Lead Applicant:</b> Anindita Sonowal", styles['MetaKey']),
             Paragraph("<b>Headquarters:</b> Bamunimaidam, Guwahati - 781021", styles['MetaKey'])
         ],
         [
             Paragraph("<b>Live Prototype:</b> https://mudran-sewa.pages.dev/", styles['MetaKey']),
-            Paragraph("<b>App Tutorial & Guide:</b> https://mudran-sewa.pages.dev/#tutorial", styles['MetaKey'])
+            Paragraph("<b>Solution Innovator:</b> Serve and Secure Private Limited", styles['MetaKey'])
         ]
     ]
     meta_table = Table(pow_meta, colWidths=[240, 247])
@@ -1252,15 +1251,14 @@ Deployment: https://mudran-sewa.pages.dev • Branch: main • Commit: productio
     story.append(Paragraph("Sign-Off & Applicant Attribution", styles['FieldHeading']))
     story.append(HRFlowable(width="100%", thickness=1, color=C_RULE, spaceBefore=2, spaceAfter=4))
     
-    signoff_text = """• <b>Prepared By:</b> Ron Hatibaruah<br/>
-    • <b>Lead Solutions Architect & Innovator:</b> Ron Hatibaruah<br/>
-    • <b>Contact:</b> <code>ron.hatibaruah@gmail.com</code><br/>
-    • <b>Initiative:</b> Assam Innovation & Startup Foundation (AISF) / NESFIC 2026<br/>
+    signoff_text = """• <b>Lead Applicant & Solutions Architect:</b> Anindita Sonowal<br/>
+    • <b>Solution Innovator:</b> Serve and Secure Private Limited<br/>
+    • <b>Initiative:</b> North East Seva First Innovation Challenge (NESFIC 2026)<br/>
     • <b>Problem Statement ID:</b> NESFIC-D-39 (Digital Inventory & Movement Tracking for Government Press and Stationery)<br/>
     • <b>Department:</b> Directorate of Printing & Stationery, Government of Assam (Bamunimaidam, Guwahati - 781021)<br/>
-    • <b>Live Working Prototype:</b> <code>https://mudran-sewa.pages.dev</code> | <b>Interactive Tutorial:</b> <code>https://mudran-sewa.pages.dev/#tutorial</code><br/>
-    • <b>GitHub Repository:</b> <code>https://github.com/RonHatibaruah/assam-gov-stationery-track</code>"""
-    
+    • <b>Live Working Prototype:</b> <code>https://mudran-sewa.pages.dev</code> | <b>Tutorial & Guide:</b> <code>https://mudran-sewa.pages.dev/#tutorial</code><br/>
+    • <b>Disclaimer:</b> Solution prototype demonstration for NESFIC 2026 evaluation.<br/>
+    • <b>Copyright:</b> © 2026 Serve and Secure Private Limited. All rights reserved."""
     so_table = Table([[Paragraph(signoff_text, styles['BodySmall'])]], colWidths=[487])
     so_table.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#f8fafc")),

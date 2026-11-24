@@ -117,17 +117,32 @@ function setupTabs() {
       }
     });
   });
+
+  // Enable SEO/GEO friendly links across footer and body to activate tabs smoothly
+  document.querySelectorAll("a[data-tab]").forEach(link => {
+    link.addEventListener("click", (e) => {
+      const targetId = link.getAttribute("data-tab");
+      if (!targetId) return;
+      const navBtn = document.querySelector();
+      if (navBtn && !link.classList.contains("nav-tab")) {
+        e.preventDefault();
+        navBtn.click();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    });
+  });
 }
 
 function handleDeepLink() {
-  const path = window.location.pathname;
+  const path = window.location.pathname.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
   let targetTab = "tab-inventory";
-  if (path.includes("requisition")) targetTab = "tab-requisitions";
-  else if (path.includes("press") || path.includes("gazette")) targetTab = "tab-press";
-  else if (path.includes("dispatch") || path.includes("gatepass")) targetTab = "tab-dispatch";
-  else if (path.includes("admin")) targetTab = "tab-admin";
+  if (path.includes("requisition") || hash.includes("indent") || hash.includes("requisition")) targetTab = "tab-requisitions";
+  else if (path.includes("press") || path.includes("gazette") || hash.includes("press") || hash.includes("gazette")) targetTab = "tab-press";
+  else if (path.includes("dispatch") || path.includes("gatepass") || path.includes("transit") || hash.includes("dispatch") || hash.includes("transit") || hash.includes("corridor")) targetTab = "tab-dispatch";
+  else if (path.includes("admin") || hash.includes("admin") || hash.includes("audit")) targetTab = "tab-admin";
 
-  const btn = document.querySelector(`.nav-tab[data-tab="${targetTab}"]`);
+  const btn = document.querySelector();
   if (btn) btn.click();
 }
 
